@@ -497,14 +497,14 @@
         gap: 0;
         column-gap: 12px;
       }
-      .logo { padding-bottom: 10px; }
-      .logo-sub { display: none; }
-      .header-meta { display: none; }
-      .refresh-btn { padding: 4px 10px; font-size: 11px; }
-      /* refresh sits top-right, logo top-left, tabs span full width */
-      header > div:last-child { align-self: center; padding-bottom: 10px; }
+      .logo          { grid-column: 1; grid-row: 1; padding-bottom: 10px; }
+      .logo-sub      { display: none; }
+      .header-meta   { display: none; }
+      header > div:last-child { grid-column: 2; grid-row: 1; align-self: center; padding-bottom: 10px; }
+      .refresh-btn   { padding: 4px 10px; font-size: 11px; }
       .tabs {
         grid-column: 1 / -1;
+        grid-row: 2;
         justify-content: flex-start;
         border-top: 1px solid var(--border);
         margin: 0 -16px;
