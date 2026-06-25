@@ -1,11 +1,8 @@
 name: 📊 Обновить метрики связности
 
-# Запускается каждый час в 0 минут (00:00, 01:00, 02:00 и т.д.)
-# Синтаксис cron: минута часа день месяца месяц день недели (UTC)
+# Только ручной запуск через: gh workflow run update-metrics.yml
 on:
-  schedule:
-    - cron: '0 * * * *'  # Каждый час
-  workflow_dispatch:      # Можно запустить вручную
+  workflow_dispatch:
 
 jobs:
   update-metrics:
