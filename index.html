@@ -1865,10 +1865,10 @@
         {
           icon: '🛡',
           name: 'Дисциплина разработки',
-          value: metrics.guardian_rules.violations,
-          impact: metrics.guardian_rules.violations === 0 ? '+15 баллов' : '-' + (metrics.guardian_rules.violations * 5) + ' баллов',
+          value: metrics.guardian_rules.violations === 0 ? '✓ Отлично' : metrics.guardian_rules.violations + ' нарушений',
+          impact: metrics.guardian_rules.violations === 0 ? '+100 баллов' : '-' + (metrics.guardian_rules.violations * 10) + ' баллов',
           positive: metrics.guardian_rules.violations === 0,
-          details: `Расчёт: ${metrics.guardian_rules.violations} нарушений Стража × 5 = штраф`
+          details: `Расчёт: Страж выявляет нарушения (50% оценки). Остальное (50%) = скорость исправления. ${metrics.guardian_rules.violations} нарушений → штраф ${metrics.guardian_rules.violations * 10} баллов`
         },
         {
           icon: '⚡',
@@ -1881,26 +1881,26 @@
         {
           icon: '🔁',
           name: 'Процесс Code Review',
-          value: metrics.codeReview.avgReviewHours.toFixed(1) + 'ч',
-          impact: metrics.codeReview.avgReviewHours < 4 ? '+10 баллов' : '-' + Math.round((metrics.codeReview.avgReviewHours - 4) * 2) + ' баллов',
-          positive: metrics.codeReview.avgReviewHours < 4,
-          details: `Расчёт: среднее время ревью ${metrics.codeReview.avgReviewHours.toFixed(1)}ч`
+          value: metrics.codeReview.avgReviewHours === 0 && metrics.codeReview.openPRs === 0 ? '✓ Нет PR' : metrics.codeReview.avgReviewHours.toFixed(1) + 'ч',
+          impact: metrics.codeReview.avgReviewHours === 0 ? '+100 баллов' : (metrics.codeReview.avgReviewHours < 4 ? '+90 баллов' : '-' + Math.round((metrics.codeReview.avgReviewHours - 4) * 2) + ' баллов'),
+          positive: metrics.codeReview.avgReviewHours <= 4,
+          details: `Расчёт: ${metrics.codeReview.avgReviewHours === 0 ? 'Нет открытых PR (отлично!)' : 'Среднее время ревью: ' + metrics.codeReview.avgReviewHours.toFixed(1) + 'ч. > 4ч = штраф'}`
         },
         {
           icon: '📊',
           name: 'Управление проектом',
-          value: metrics.project_management.closed_issues + '/' + (metrics.project_management.total_issues || 0),
-          impact: '+12 баллов',
-          positive: true,
-          details: 'Расчёт: закрытые issues / всего issues = прогресс проекта'
+          value: metrics.project_management.open_issues + ' открытых',
+          impact: metrics.project_management.open_issues === 0 ? '+100 баллов' : '+' + (100 - Math.min(100, metrics.project_management.open_issues * 3)) + ' баллов',
+          positive: metrics.project_management.open_issues <= 3,
+          details: `Расчёт: ${metrics.project_management.open_issues} открытых issues. 0 = отлично (100), каждая +3 = штраф`
         },
         {
           icon: '👥',
           name: 'Координация команды',
-          value: metrics.team_coordination.active_members,
-          impact: '+7 баллов',
-          positive: true,
-          details: `Расчёт: ${metrics.team_coordination.active_members} активных участников = здоровая командная динамика`
+          value: metrics.team_coordination.active_members + ' за 2 дня',
+          impact: metrics.team_coordination.active_members >= 2 ? '+85-95 баллов' : (metrics.team_coordination.active_members === 1 ? '+50 баллов' : '+30 баллов'),
+          positive: metrics.team_coordination.active_members >= 2,
+          details: `Расчёт: ${metrics.team_coordination.active_members} активных участников за последние 2 дня. 0 = 30 баллов, 1 = 50, 2-3 = 85, 4+ = 95`
         },
         {
           icon: '🏗️',

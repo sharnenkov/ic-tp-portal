@@ -127,7 +127,9 @@ async function getMetrics() {
     // 3. Дисциплина разработки (Development Discipline) - Guardian rules violations
     guardian_rules: {
       violations: 0,  // Будет заполнено из workflow результатов
-      score: 95
+      // 0 нарушений = 100 баллов (отлично)
+      // Каждое нарушение = штраф
+      score: 100 - Math.min(100, (0 || 0) * 10)
     },
 
     // 4. Качество кода (Code Quality)
@@ -145,15 +147,15 @@ async function getMetrics() {
 
     // 6. Управление проектом (Project Management)
     project_management: {
-      total_issues: (issues || []).length + openIssuesCount,
-      closed_issues: (issues || []).filter(i => i.state === 'closed').length,
-      score: calculateProjectManagementScore(issues)
+      open_issues: openIssuesCount,
+      closed_issues: 0,  // TODO: получить из API
+      score: calculateProjectManagementScore(openIssuesCount)
     },
 
     // 7. Координация команды (Team Coordination)
     team_coordination: {
-      active_members: countActiveMembers(commits),
-      score: 85
+      active_members: countActiveMembersLastDays(commits, 2),
+      score: calculateTeamCoordinationScore(countActiveMembersLastDays(commits, 2))
     },
 
     // 8. Качество архитектуры (Architecture Quality)
@@ -211,18 +213,26 @@ async function getMetrics() {
 }
 
 function calculateReviewScore(avgHours, openPRs) {
+  // Если нет PR вообще (avgHours = 0 и openPRs = 0) = отлично (100)
+  if (avgHours === 0 && openPRs === 0) {
+    return 100;
+  }
+
   let score = 100;
-  
+
   // Штраф за медленные reviews (>24ч = -10 за каждые 24ч)
   if (avgHours > 24) {
     score -= Math.min(40, Math.floor(avgHours / 24) * 10);
+  } else if (avgHours > 4) {
+    // Штраф за медленные (>4ч но <24ч)
+    score -= Math.min(20, (avgHours - 4) * 2);
   }
-  
+
   // Штраф за открытые PR (>2 открытых = проблема)
   if (openPRs > 2) {
     score -= Math.min(20, (openPRs - 2) * 5);
   }
-  
+
   return Math.max(20, score);
 }
 
@@ -272,32 +282,46 @@ function calculateKnowledgeManagementScore(commits, issues) {
 }
 
 // 6. Управление проектом (Project Management)
-// Оценивает закрытие issues, управление project tracking
-function calculateProjectManagementScore(issues) {
-  if (!issues || issues.length === 0) return 70;
-
-  const totalIssues = issues.length;
-  const closedRatio = (issues.filter(i => i.state === 'closed').length / totalIssues);
-
-  if (closedRatio > 0.8) return 95;
-  if (closedRatio > 0.6) return 85;
-  if (closedRatio > 0.4) return 70;
-  if (closedRatio > 0.2) return 50;
-  return 30;
+// Оценивает активность по issues
+function calculateProjectManagementScore(openIssuesCount) {
+  // Меньше открытых issues = лучше
+  if (openIssuesCount === 0) return 100;
+  if (openIssuesCount <= 3) return 90;
+  if (openIssuesCount <= 5) return 75;
+  if (openIssuesCount <= 10) return 60;
+  return Math.max(30, 100 - openIssuesCount * 3);
 }
 
 // 7. Координация команды (Team Coordination)
-// Подсчитывает активных участников по коммитам
-function countActiveMembers(commits) {
+// Подсчитывает активных участников за последние 2 дня
+function countActiveMembersLastDays(commits, days = 2) {
   if (!commits || commits.length === 0) return 0;
+
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
 
   const authors = new Set();
   (commits || []).forEach(c => {
-    const author = c.commit?.author?.name || c.author?.login;
-    if (author) authors.add(author);
+    try {
+      const date = new Date(c.commit?.author?.date || c.commit?.committer?.date);
+      if (date > cutoff) {
+        const author = c.commit?.author?.name || c.author?.login;
+        if (author) authors.add(author);
+      }
+    } catch {
+      // skip if date parsing fails
+    }
   });
 
   return authors.size;
+}
+
+// Team coordination score based on active members in last 2 days
+function calculateTeamCoordinationScore(activeMembersLastDays) {
+  if (activeMembersLastDays === 0) return 30; // Никто не активен
+  if (activeMembersLastDays === 1) return 50; // Один активен
+  if (activeMembersLastDays <= 3) return 85; // 2-3 активны
+  return 95; // 4+ активны
 }
 
 async function main() {
