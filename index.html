@@ -775,6 +775,39 @@
 
     .conn-canvas { width: 100%; height: 100%; display: block; }
 
+    .conn-refresh-btn {
+      padding: 8px 16px;
+      background: rgba(100, 200, 100, 0.2);
+      border: 1px solid #64c864;
+      color: #64c864;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .conn-refresh-btn:hover {
+      background: rgba(100, 200, 100, 0.3);
+      box-shadow: 0 0 12px rgba(100, 200, 100, 0.4);
+    }
+
+    .conn-refresh-btn:active {
+      transform: scale(0.95);
+    }
+
+    .conn-refresh-btn.loading {
+      opacity: 0.6;
+      cursor: wait;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
     .conn-metrics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1412,8 +1445,15 @@
           </div>
         </div>
 
+        <!-- Refresh Button -->
+        <div style="margin-top:64px;margin-bottom:24px;display:flex;gap:12px;align-items:center">
+          <div class="conn-chart-label">Факторы влияющие на связность системы</div>
+          <button id="conn-refresh-btn" class="conn-refresh-btn" title="Получить актуальные данные из GitHub">
+            🔄 Обновить
+          </button>
+        </div>
+
         <!-- Metrics -->
-        <div class="conn-chart-label" style="margin-top:64px;display:block;margin-bottom:24px">Факторы влияющие на связность системы</div>
         <div class="conn-metrics-grid" id="conn-metrics-grid"></div>
 
         <!-- Guide -->
@@ -1950,8 +1990,53 @@
     });
   }
 
+  // Refresh metrics from API
+  async function connRefreshMetrics() {
+    const btn = document.getElementById('conn-refresh-btn');
+    if (!btn || btn.classList.contains('loading')) return;
+
+    btn.classList.add('loading');
+    btn.textContent = '⏳ Загружаю...';
+
+    try {
+      const response = await fetch('/api/metrics');
+      if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+      const newMetrics = await response.json();
+
+      // Сохранить в localStorage и обновить дашборд
+      localStorage.setItem('conn-current-metrics', JSON.stringify(newMetrics));
+
+      // Перезагрузить дашборд
+      document.getElementById('conn-entropyValue').textContent = newMetrics.overallConnectivity;
+      connSaveMetricHistory(newMetrics.overallConnectivity);
+      connLoadMetrics(newMetrics);
+
+      btn.classList.remove('loading');
+      btn.textContent = '✅ Обновлено!';
+      setTimeout(() => {
+        btn.textContent = '🔄 Обновить';
+      }, 2000);
+
+      console.log('✅ Метрики обновлены:', newMetrics);
+    } catch (err) {
+      console.error('❌ Ошибка обновления:', err);
+      btn.classList.remove('loading');
+      btn.textContent = '❌ Ошибка';
+      setTimeout(() => {
+        btn.textContent = '🔄 Обновить';
+      }, 3000);
+    }
+  }
+
   // Init connectivity dashboard
   if (document.getElementById('conn-waveCanvas')) {
+    // Setup refresh button
+    const refreshBtn = document.getElementById('conn-refresh-btn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', connRefreshMetrics);
+    }
+
     connLoadMetrics();
     connSetupResponsive();
     setInterval(connUpdateTimer, 60000);
