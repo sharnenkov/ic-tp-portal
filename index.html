@@ -1850,17 +1850,17 @@
           icon: '📚',
           name: 'Документированность',
           value: metrics.documentation.score + '%',
-          impact: '+12 баллов',
-          positive: true,
-          details: 'Расчёт: покрытие документацией × 0.13 = +12 баллов бонуса'
+          impact: '+' + Math.round(metrics.documentation.score * 0.11) + ' баллов',
+          positive: metrics.documentation.score >= 80,
+          details: `Расчёт: ${metrics.documentation.score}% покрытие × 0.11 = +${Math.round(metrics.documentation.score * 0.11)} баллов`
         },
         {
           icon: '🎓',
           name: 'Управление знаниями',
           value: metrics.knowledge_management.score,
-          impact: '+10 баллов',
-          positive: true,
-          details: 'Расчёт: наличие wiki, примеров, docs = +10 баллов'
+          impact: '+' + Math.round(metrics.knowledge_management.score * 0.1) + ' баллов',
+          positive: metrics.knowledge_management.score >= 80,
+          details: `Расчёт: Наличие wiki, примеров, docs = ${metrics.knowledge_management.score} баллов`
         },
         {
           icon: '🛡',
@@ -1874,9 +1874,9 @@
           icon: '⚡',
           name: 'Качество кода',
           value: metrics.codeQuality.score,
-          impact: '+8 баллов',
-          positive: true,
-          details: 'Расчёт: средний скор linter + сложность = +8 баллов'
+          impact: '+' + Math.round(metrics.codeQuality.score * 0.1) + ' баллов',
+          positive: metrics.codeQuality.score >= 80,
+          details: `Расчёт: Скор linter и сложность = ${metrics.codeQuality.score} баллов`
         },
         {
           icon: '🔁',
@@ -1898,25 +1898,25 @@
           icon: '👥',
           name: 'Координация команды',
           value: metrics.team_coordination.active_members + ' за 2 дня',
-          impact: metrics.team_coordination.active_members >= 2 ? '+85-95 баллов' : (metrics.team_coordination.active_members === 1 ? '+50 баллов' : '+30 баллов'),
+          impact: '+' + metrics.team_coordination.score + ' баллов',
           positive: metrics.team_coordination.active_members >= 2,
-          details: `Расчёт: ${metrics.team_coordination.active_members} активных участников за последние 2 дня. 0 = 30 баллов, 1 = 50, 2-3 = 85, 4+ = 95`
+          details: `Расчёт: ${metrics.team_coordination.active_members} активных участников за последние 2 дня (коммиты + комментарии + reviews). 0 = 30, 1 = 50, 2-3 = 85, 4+ = 95 баллов`
         },
         {
           icon: '🏗️',
           name: 'Качество архитектуры',
           value: metrics.architecture.score,
-          impact: '+9 баллов',
-          positive: true,
-          details: 'Расчёт: модульность, зависимости, слои = +9 баллов'
+          impact: '+' + Math.round(metrics.architecture.score * 0.11) + ' баллов',
+          positive: metrics.architecture.score >= 80,
+          details: `Расчёт: Модульность, зависимости, слои = ${metrics.architecture.score} баллов`
         },
         {
           icon: '✅',
           name: 'Надёжность системы',
           value: metrics.system_reliability.score,
-          impact: '+8 баллов',
-          positive: true,
-          details: 'Расчёт: стабильность деплоев, uptime = +8 баллов'
+          impact: '+' + Math.round(metrics.system_reliability.score * 0.1) + ' баллов',
+          positive: metrics.system_reliability.score >= 80,
+          details: `Расчёт: Стабильность деплоев, uptime = ${metrics.system_reliability.score} баллов`
         }
       ];
 
