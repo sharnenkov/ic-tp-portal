@@ -1404,7 +1404,7 @@
           </div>
           <div class="conn-wave-chart">
             <div class="conn-chart-container">
-              <canvas id="conn-waveCanvas" class="conn-canvas" width="800" height="240"></canvas>
+              <canvas id="conn-waveCanvas" class="conn-canvas" width="800" height="300"></canvas>
             </div>
           </div>
         </div>
@@ -1621,8 +1621,10 @@
     const graphWidth = width - 2 * padding;
     const graphHeight = height - 2 * padding;
 
-    // Масштаб для текста пропорционально ширине canvas
-    const scale = Math.max(0.7, Math.min(1.5, width / 800));
+    // Масштаб для текста пропорционально размерам canvas
+    const scaleX = width / 800;
+    const scaleY = height / 300;
+    const scale = Math.max(0.8, Math.min(1.4, (scaleX + scaleY) / 2));
 
     // Grid lines
     ctx.strokeStyle = 'rgba(120, 120, 160, 0.1)';
@@ -1764,6 +1766,17 @@
     const today = new Date().toISOString().split('T')[0];
     let history = JSON.parse(localStorage.getItem('conn-history') || '{}');
 
+    // Очищаем данные старше 7 дней (артефакты)
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 7);
+    const cutoffStr = cutoff.toISOString().split('T')[0];
+
+    Object.keys(history).forEach(date => {
+      if (date < cutoffStr) {
+        delete history[date];
+      }
+    });
+
     // Сохраняем только если дата изменилась
     if (history[today] === undefined) {
       history[today] = value;
@@ -1823,7 +1836,7 @@
       if (weekData.daysUntilFull > 0) {
         const dayWord = weekData.daysUntilFull === 1 ? 'день' : 'дней';
         document.getElementById('conn-week-range').innerHTML +=
-          `<span style="font-size:11px;color:#7878a0;margin-left:8px">• История появится через ${weekData.daysUntilFull} ${dayWord}</span>`;
+          `<span style="font-size:11px;color:#7878a0;margin-left:8px">• Актуальная история появится через ${weekData.daysUntilFull} ${dayWord}</span>`;
       }
 
       // Draw wave chart with actual history
