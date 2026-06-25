@@ -8,7 +8,7 @@
   },
   "guardian_rules": {
     "violations": 10,
-    "score": 0
+    "score": 20
   },
   "codeQuality": {
     "score": 82
@@ -51,5 +51,5 @@
   "testReliability": {
     "score": 84
   },
-  "overallConnectivity": 65
+  "overallConnectivity": 67
 }
