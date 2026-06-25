@@ -15,18 +15,18 @@
   },
   "codeReview": {
     "openPRs": 0,
-    "avgReviewHours": 0,
-    "reviewedCount": 0,
-    "score": 100
+    "avgReviewHours": 14,
+    "reviewedCount": 9,
+    "score": 80
   },
   "project_management": {
-    "open_issues": 0,
+    "open_issues": 32,
     "closed_issues": 0,
-    "score": 100
+    "score": 30
   },
   "team_coordination": {
-    "active_members": 0,
-    "score": 30
+    "active_members": 3,
+    "score": 85
   },
   "architecture": {
     "score": 81
@@ -35,12 +35,12 @@
     "score": 88
   },
   "issues": {
-    "openCount": 0,
-    "score": 100
+    "openCount": 32,
+    "score": 20
   },
   "commitRegularity": {
-    "weeklyCommits": 0,
-    "score": 30
+    "weeklyCommits": 14,
+    "score": 95
   },
   "testCoverage": {
     "score": 78
@@ -51,5 +51,5 @@
   "testReliability": {
     "score": 84
   },
-  "overallConnectivity": 82
+  "overallConnectivity": 81
 }
