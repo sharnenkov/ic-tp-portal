@@ -1,0 +1,197 @@
+{
+  "kpis": {
+    "deadline": {
+      "label": "До дедлайна",
+      "value": "6",
+      "date": "1 июля 2026",
+      "type": "amber"
+    },
+    "tasks": {
+      "label": "Открытых задач",
+      "value": "3",
+      "issues": ["#15", "#19", "#21"],
+      "type": "accent"
+    },
+    "maturity": {
+      "label": "Индекс зрелости",
+      "value": "5.1",
+      "max": "10",
+      "dimensions": "6 измерений",
+      "type": "green"
+    },
+    "nextMilestone": {
+      "label": "До след. Milestone",
+      "value": "0",
+      "name": "Сценарий онбординга",
+      "date": "25.06",
+      "type": "accent"
+    }
+  },
+
+  "roadmap": {
+    "milestones": [
+      {
+        "name": "Онбординг ЦИРа",
+        "date": "05.06.2026",
+        "status": "done",
+        "badge": "✓ Закрыт"
+      },
+      {
+        "name": "Рамка готова",
+        "date": "15.06.2026",
+        "status": "active",
+        "badge": "● Закрывается"
+      },
+      {
+        "name": "Сценарий онбординга",
+        "date": "25.06.2026",
+        "status": "pending",
+        "badge": "⏳ Следующий"
+      },
+      {
+        "name": "Передача в проект",
+        "date": "01.07.2026",
+        "status": "pending",
+        "badge": "⏳ Дедлайн"
+      }
+    ]
+  },
+
+  "decisions": {
+    "meeting_date": "15.06.2026",
+    "items": [
+      {
+        "code": "А-6",
+        "text": "Команда готова к запуску Стража Scope (Фаза 2)"
+      },
+      {
+        "code": "А-2",
+        "text": "Формат карточки: JSON — машиночитаемый, Страж валидирует структуру"
+      },
+      {
+        "code": "О-3",
+        "text": "Минимальный результат встречи: следующий шаг с ответственным"
+      },
+      {
+        "code": "О-4",
+        "text": "Прототипы — только в личном репо, граница ситуативная"
+      }
+    ]
+  },
+
+  "nextSteps": [
+    {
+      "number": 1,
+      "text": "Закрыть Issue #17 и Milestone «Рамка готова»"
+    },
+    {
+      "number": 2,
+      "text": "Смержить PR #26 (Страж Phase 1) в main"
+    },
+    {
+      "number": 3,
+      "text": "Настроить Telegram-бота (Страж Phase 2 — Scope Monitor)"
+    },
+    {
+      "number": 4,
+      "text": "Перейти к Milestone «Сценарий онбординга»"
+    }
+  ],
+
+  "participants": [
+    {
+      "role": "Реализатор",
+      "name": "Алексей Шарненков",
+      "expertise": "Архитектура, IC.TP координация",
+      "github": "@sharnenkov"
+    },
+    {
+      "role": "Архитектор",
+      "name": "Денис Рудоманенко",
+      "expertise": "Backend, GitHub Actions, Страж",
+      "github": "@denisrudomanenko"
+    },
+    {
+      "role": "Эксперт",
+      "name": "Вячеслав (Bronislav28)",
+      "expertise": "Методология, документация",
+      "github": "@Bronislav28"
+    }
+  ],
+
+  "tools": [
+    {
+      "name": "GitHub",
+      "category": "VCS",
+      "status": "production",
+      "description": "Основной репозиторий IC.TP. Используется для версионирования, CI/CD, Issues, Pull Requests."
+    },
+    {
+      "name": "Страж (Guardian)",
+      "category": "Автоматизация",
+      "status": "phase1",
+      "description": "Монитор гигиены репо. Phase 1 (Гигиена) готова, Phase 2 (Scope Monitor) в разработке."
+    },
+    {
+      "name": "Telegram Bot",
+      "category": "Интеграция",
+      "status": "planning",
+      "description": "Уведомления о Страже в Telegram. Запланирован для Phase 2 Стража."
+    },
+    {
+      "name": "Claude Code",
+      "category": "Разработка",
+      "status": "production",
+      "description": "AI помощник для разработки. Интегрирован с GitHub через MCP сервер."
+    },
+    {
+      "name": "Vercel",
+      "category": "Деплой",
+      "status": "production",
+      "description": "Хостинг портала IC.TP. Автоматический деплой на каждый push в main."
+    },
+    {
+      "name": "Holst",
+      "category": "Управление проектом",
+      "status": "planning",
+      "description": "Рабочее пространство команды. API планируется в конце 2026."
+    }
+  ],
+
+  "methodology": {
+    "title": "Таблица зрелости",
+    "maxScore": 10,
+    "dimensions": [
+      {
+        "name": "Автоматизация",
+        "score": 6,
+        "description": "GitHub Actions, Страж, CI/CD"
+      },
+      {
+        "name": "Документация",
+        "score": 7,
+        "description": "Wiki, README, процессы в docs"
+      },
+      {
+        "name": "Командная работа",
+        "score": 4,
+        "description": "Встречи, синхронизация, разделение ролей"
+      },
+      {
+        "name": "Управление знаниями",
+        "score": 5,
+        "description": "Обучение, онбординг, передача знаний"
+      },
+      {
+        "name": "Качество кода",
+        "score": 6,
+        "description": "Code Review, тесты, архитектура"
+      },
+      {
+        "name": "Процессы",
+        "score": 3,
+        "description": "Методология Стража, процесс разработки"
+      }
+    ]
+  }
+}
