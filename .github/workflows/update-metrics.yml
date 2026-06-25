@@ -1,0 +1,44 @@
+name: 📊 Обновить метрики связности
+
+# Запускается каждый час в 0 минут (00:00, 01:00, 02:00 и т.д.)
+# Синтаксис cron: минута часа день месяца месяц день недели (UTC)
+on:
+  schedule:
+    - cron: '0 * * * *'  # Каждый час
+  workflow_dispatch:      # Можно запустить вручную
+
+jobs:
+  update-metrics:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Клонировать репо
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Получить всю историю для корректного подсчёта
+
+      - name: 🟢 Установить Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: 📊 Запустить скрипт обновления метрик
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd ic-tp-portal
+          node fetch-metrics.js
+
+      - name: 💾 Коммитить обновлённые метрики
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
+          cd ic-tp-portal
+          if git diff --quiet metrics.json; then
+            echo "✓ Метрики не изменились"
+          else
+            echo "📝 Коммитим обновлённые метрики..."
+            git add metrics.json
+            git commit -m "chore: обновить метрики связности системы [automated]"
+            git push
+          fi
