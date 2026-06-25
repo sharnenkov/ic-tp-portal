@@ -91,11 +91,14 @@ async function getReviewTime(pulls) {
 
 async function getMetrics() {
   console.log(`📊 Получаем метрики для ${REPO}...`);
-  
-  const [issues, pulls, commits] = await Promise.all([
+
+  const [issues, pulls, commits, issueComments, prComments, prReviews] = await Promise.all([
     request(`/repos/${REPO}/issues?state=open&per_page=100`),
     request(`/repos/${REPO}/pulls?state=closed&per_page=50`),
-    request(`/repos/${REPO}/commits?per_page=100`)
+    request(`/repos/${REPO}/commits?per_page=100`),
+    request(`/repos/${REPO}/issues/comments?per_page=100&sort=updated&direction=desc`),
+    request(`/repos/${REPO}/pulls/comments?per_page=100&sort=updated&direction=desc`),
+    request(`/repos/${REPO}/pulls/reviews?per_page=100`)
   ]);
 
   // Получаем правильное время ревью
@@ -126,10 +129,8 @@ async function getMetrics() {
 
     // 3. Дисциплина разработки (Development Discipline) - Guardian rules violations
     guardian_rules: {
-      violations: 0,  // Будет заполнено из workflow результатов
-      // 0 нарушений = 100 баллов (отлично)
-      // Каждое нарушение = штраф
-      score: 100 - Math.min(100, (0 || 0) * 10)
+      violations: countGuardianViolations(issues),
+      score: calculateGuardianScore(countGuardianViolations(issues))
     },
 
     // 4. Качество кода (Code Quality)
@@ -154,8 +155,8 @@ async function getMetrics() {
 
     // 7. Координация команды (Team Coordination)
     team_coordination: {
-      active_members: countActiveMembersLastDays(commits, 2),
-      score: calculateTeamCoordinationScore(countActiveMembersLastDays(commits, 2))
+      active_members: countActiveMembersLastDays(commits, issueComments, prComments, prReviews, 2),
+      score: calculateTeamCoordinationScore(countActiveMembersLastDays(commits, issueComments, prComments, prReviews, 2))
     },
 
     // 8. Качество архитектуры (Architecture Quality)
@@ -210,6 +211,28 @@ async function getMetrics() {
   );
 
   return metrics;
+}
+
+// Подсчитывает нарушения Guardian (issues с меткой guardian или от bot Стража)
+function countGuardianViolations(issues) {
+  if (!issues || issues.length === 0) return 0;
+
+  return (issues || []).filter(issue => {
+    const labels = (issue.labels || []).map(l => l.name.toLowerCase());
+    const hasGuardianLabel = labels.some(l => l.includes('guardian') || l.includes('страж'));
+    const isFromGuardian = issue.user?.login?.toLowerCase().includes('guardian') ||
+                          issue.user?.login?.toLowerCase().includes('bot');
+    const title = (issue.title || '').toLowerCase();
+    const hasGuardianTitle = title.includes('🔬') || title.includes('страж');
+
+    return hasGuardianLabel || isFromGuardian || hasGuardianTitle;
+  }).length;
+}
+
+function calculateGuardianScore(violations) {
+  // 0 нарушений = 100 баллов (отлично)
+  // Каждое нарушение = -10 баллов
+  return Math.max(20, 100 - (violations * 10));
 }
 
 function calculateReviewScore(avgHours, openPRs) {
@@ -293,14 +316,14 @@ function calculateProjectManagementScore(openIssuesCount) {
 }
 
 // 7. Координация команды (Team Coordination)
-// Подсчитывает активных участников за последние 2 дня
-function countActiveMembersLastDays(commits, days = 2) {
-  if (!commits || commits.length === 0) return 0;
-
+// Подсчитывает активных участников за последние 2 дня (коммиты + комментарии + reviews)
+function countActiveMembersLastDays(commits, issueComments, prComments, prReviews, days = 2) {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
 
   const authors = new Set();
+
+  // Коммиты
   (commits || []).forEach(c => {
     try {
       const date = new Date(c.commit?.author?.date || c.commit?.committer?.date);
@@ -309,7 +332,46 @@ function countActiveMembersLastDays(commits, days = 2) {
         if (author) authors.add(author);
       }
     } catch {
-      // skip if date parsing fails
+      // skip
+    }
+  });
+
+  // Комментарии в issues
+  (issueComments || []).forEach(comment => {
+    try {
+      const date = new Date(comment.created_at);
+      if (date > cutoff) {
+        const user = comment.user?.login || comment.user?.name;
+        if (user) authors.add(user);
+      }
+    } catch {
+      // skip
+    }
+  });
+
+  // Комментарии в PR
+  (prComments || []).forEach(comment => {
+    try {
+      const date = new Date(comment.created_at);
+      if (date > cutoff) {
+        const user = comment.user?.login || comment.user?.name;
+        if (user) authors.add(user);
+      }
+    } catch {
+      // skip
+    }
+  });
+
+  // Reviews в PR
+  (prReviews || []).forEach(review => {
+    try {
+      const date = new Date(review.submitted_at || review.created_at);
+      if (date > cutoff) {
+        const user = review.user?.login || review.user?.name;
+        if (user) authors.add(user);
+      }
+    } catch {
+      // skip
     }
   });
 
