@@ -1921,6 +1921,7 @@
       ];
 
       const grid = document.getElementById('conn-metrics-grid');
+      console.log('Отрисовываю карточки метрик:', metricsData.length);
       grid.innerHTML = metricsData.map(m => `
         <div class="conn-metric-card ${m.positive ? 'good' : 'critical'}">
           <div class="conn-metric-icon">${m.icon}</div>
