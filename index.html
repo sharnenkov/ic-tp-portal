@@ -952,66 +952,13 @@
   <!-- ══════════════════════════════════════════════════ TAB: СВОДНАЯ -->
   <div id="overview" class="tab-panel active">
 
-    <div class="kpi-strip">
-      <div class="kpi-card">
-        <div class="kpi-label">До дедлайна</div>
-        <div class="kpi-value amber" id="kpi-days"></div>
-        <div class="kpi-sub">1 июля 2026</div>
-      </div>
-      <div class="kpi-card kpi-link" data-goto="participants">
-        <div class="kpi-label">Открытых задач</div>
-        <div class="kpi-value accent">3</div>
-        <div class="kpi-sub">#15 · #19 · #21</div>
-      </div>
-      <div class="kpi-card kpi-link" data-goto="methodology">
-        <div class="kpi-label">Индекс зрелости</div>
-        <div class="kpi-value green">5.1</div>
-        <div class="kpi-sub">из 10 · 6 измерений</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">До след. Milestone</div>
-        <div class="kpi-value accent" id="kpi-next-ms"></div>
-        <div class="kpi-sub">Сценарий онбординга · 25.06</div>
-      </div>
-    </div>
+    <div class="kpi-strip" id="kpi-strip"></div>
 
     <div class="section">
       <div class="section-title">Дорожная карта</div>
       <div class="card">
         <div class="card-body" style="padding:0">
-          <div class="timeline">
-            <div class="milestone">
-              <div class="ms-dot done"></div>
-              <div class="ms-info">
-                <div class="ms-label">Онбординг ЦИРа</div>
-                <div class="ms-date">05.06.2026</div>
-                <div class="ms-badge"><span class="badge badge-green">✓ Закрыт</span></div>
-              </div>
-            </div>
-            <div class="milestone">
-              <div class="ms-dot active"></div>
-              <div class="ms-info">
-                <div class="ms-label">Рамка готова</div>
-                <div class="ms-date">15.06.2026</div>
-                <div class="ms-badge"><span class="badge badge-accent">● Закрывается</span></div>
-              </div>
-            </div>
-            <div class="milestone">
-              <div class="ms-dot pending"></div>
-              <div class="ms-info">
-                <div class="ms-label">Сценарий онбординга</div>
-                <div class="ms-date">25.06.2026</div>
-                <div class="ms-badge"><span class="badge badge-muted">⏳ Следующий</span></div>
-              </div>
-            </div>
-            <div class="milestone">
-              <div class="ms-dot pending"></div>
-              <div class="ms-info">
-                <div class="ms-label">Передача в проект</div>
-                <div class="ms-date">01.07.2026</div>
-                <div class="ms-badge"><span class="badge badge-muted">⏳ Дедлайн</span></div>
-              </div>
-            </div>
+          <div class="timeline" id="roadmap-timeline">
           </div>
         </div>
       </div>
@@ -1019,22 +966,12 @@
 
     <div class="grid-2" style="margin-bottom:24px">
       <div class="section">
-        <div class="section-title">Решения встречи 15.06</div>
-        <div class="decision-list">
-          <div class="decision-item"><span class="decision-code">А-6</span><span>Команда готова к запуску Стража Scope (Фаза 2)</span></div>
-          <div class="decision-item"><span class="decision-code">А-2</span><span>Формат карточки: JSON — машиночитаемый, Страж валидирует структуру</span></div>
-          <div class="decision-item"><span class="decision-code">О-3</span><span>Минимальный результат встречи: следующий шаг с ответственным</span></div>
-          <div class="decision-item"><span class="decision-code">О-4</span><span>Прототипы — только в личном репо, граница ситуативная</span></div>
-        </div>
+        <div class="section-title" id="decisions-title">Решения встречи</div>
+        <div class="decision-list" id="decisions-list"></div>
       </div>
       <div class="section">
         <div class="section-title">Ближайшие шаги</div>
-        <ul class="steps-list">
-          <li class="step-item"><span class="step-num">1</span><span>Закрыть Issue #17 и Milestone «Рамка готова»</span></li>
-          <li class="step-item"><span class="step-num">2</span><span>Смержить PR #26 (Страж Phase 1) в main</span></li>
-          <li class="step-item"><span class="step-num">3</span><span>Настроить Telegram-бота (Страж Phase 2 — Scope Monitor)</span></li>
-          <li class="step-item"><span class="step-num">4</span><span>Перейти к Milestone «Сценарий онбординга»</span></li>
-        </ul>
+        <ul class="steps-list" id="steps-list"></ul>
       </div>
     </div>
 
@@ -1085,7 +1022,7 @@
       <div class="section-title">Индекс зрелости проекта</div>
       <div class="maturity-hero">
         <div class="maturity-big">
-          <div class="maturity-number" id="maturity-avg">5.1</div>
+          <div class="maturity-number" id="maturity-avg"></div>
           <div class="maturity-label">Индекс зрелости</div>
         </div>
         <div class="maturity-bars" id="maturity-bars"></div>
@@ -1191,91 +1128,16 @@
 
   <!-- ══════════════════════════════════════════════ TAB: УЧАСТНИКИ -->
   <div id="participants" class="tab-panel">
-
     <div class="section">
       <div class="section-title">Команда ЦИРа</div>
-      <div class="participant-grid">
-        <div class="participant-card">
-          <div class="participant-head">
-            <div class="avatar">Д</div>
-            <div>
-              <div class="p-name">Денис Рудоманенко</div>
-              <div class="p-handle">@denisrudomanenko-stack</div>
-              <div class="p-role">Методолог</div>
-            </div>
-          </div>
-          <div class="participant-body">
-            <div class="task-item"><span class="issue-num">#15</span><span>Ревью концепции Activity Tracker</span></div>
-            <div class="task-item"><span class="issue-num">PR#26</span><span>Ревью Стража Phase 1 (guardian-hygiene)</span></div>
-            <div class="task-item"><span class="issue-num">→</span><span>Закрыть Milestone «Рамка готова»</span></div>
-          </div>
-        </div>
-        <div class="participant-card">
-          <div class="participant-head">
-            <div class="avatar" style="background:linear-gradient(135deg,#0891b2,#6366f1)">А</div>
-            <div>
-              <div class="p-name">Алексей Шарненков</div>
-              <div class="p-handle">@sharnenkov</div>
-              <div class="p-role">Реализатор</div>
-            </div>
-          </div>
-          <div class="participant-body">
-            <div class="task-item"><span class="issue-num">#21</span><span>Тест Белбина — командные роли</span></div>
-            <div class="task-item"><span class="issue-num">#19</span><span>Рецензия: концепт единого интерфейса</span></div>
-            <p class="p-note">Участвует заочно с 15.06</p>
-          </div>
-        </div>
-        <div class="participant-card">
-          <div class="participant-head">
-            <div class="avatar" style="background:linear-gradient(135deg,#10b981,#059669)">Б</div>
-            <div>
-              <div class="p-name">Бронислав</div>
-              <div class="p-handle">@Bronislav28</div>
-              <div class="p-role">Разработчик</div>
-            </div>
-          </div>
-          <div class="participant-body">
-            <div class="task-item"><span class="issue-num">#15</span><span>Ревью концепции Activity Tracker</span></div>
-            <div class="task-item"><span class="issue-num">#21</span><span>Тест Белбина — командные роли</span></div>
-            <div class="task-item"><span class="issue-num">→</span><span>Развитие Activity Tracker после ревью</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">Расширенная команда проекта</div>
-      <div class="card">
-        <div class="card-body">
-          <div class="team-row">
-            <div class="sm-avatar" style="background:linear-gradient(135deg,#f59e0b,#f97316)">А</div>
-            <div><div style="font-weight:600;font-size:14px">Артур Очеретный</div><div style="font-size:12px;color:var(--muted-light)">Держатель замысла, спонсор · подключается на стадии MVP</div></div>
-          </div>
-          <div class="team-row">
-            <div class="sm-avatar" style="background:linear-gradient(135deg,#8b5cf6,#6366f1)">А</div>
-            <div><div style="font-weight:600;font-size:14px">Андрей Алексахин</div><div style="font-size:12px;color:var(--muted-light)">Продюсер / VP Трансформации</div></div>
-          </div>
-          <div class="team-row">
-            <div class="sm-avatar" style="background:linear-gradient(135deg,#0891b2,#22d3ee)">А</div>
-            <div><div style="font-weight:600;font-size:14px">Антон Стасенок</div><div style="font-size:12px;color:var(--muted-light)">Технология — инфраструктура, модели</div></div>
-          </div>
-          <div class="team-row">
-            <div class="sm-avatar" style="background:linear-gradient(135deg,#10b981,#0891b2)">П</div>
-            <div><div style="font-weight:600;font-size:14px">Полина (команда Антона)</div><div style="font-size:12px;color:var(--muted-light)">PMO эксперимента</div></div>
-          </div>
-          <div class="team-row">
-            <div class="sm-avatar" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">Е</div>
-            <div><div style="font-weight:600;font-size:14px">Екатерина</div><div style="font-size:12px;color:var(--muted-light)">Приглашённый участник · дизайн пространства Holst</div></div>
-          </div>
-        </div>
-      </div>
+      <div id="participants-list"></div>
     </div>
   </div>
 
 
   <!-- ══════════════════════════════════════════════ TAB: ИНСТРУМЕНТЫ -->
   <div id="tools" class="tab-panel">
-
+    <div id="tools-list"></div>
     <div class="section">
       <div class="section-title">Страж (Guardian) — ИИ-агент мониторинга</div>
       <div class="guardian-phases">
@@ -2020,39 +1882,35 @@
   function renderOverviewTab() {
     const kpis = portalData.kpis;
 
-    // KPI cards
-    const kpiCards = document.querySelectorAll('.kpi-card');
-    if (kpiCards[0]) {
-      kpiCards[0].innerHTML = `
-        <div class="kpi-label">${kpis.deadline.label}</div>
-        <div class="kpi-value ${kpis.deadline.type}" id="kpi-days">${kpis.deadline.value}</div>
-        <div class="kpi-sub">${kpis.deadline.date}</div>
-      `;
-    }
-    if (kpiCards[1]) {
-      kpiCards[1].innerHTML = `
-        <div class="kpi-label">${kpis.tasks.label}</div>
-        <div class="kpi-value ${kpis.tasks.type}">${kpis.tasks.value}</div>
-        <div class="kpi-sub">${kpis.tasks.issues.join(' · ')}</div>
-      `;
-    }
-    if (kpiCards[2]) {
-      kpiCards[2].innerHTML = `
-        <div class="kpi-label">${kpis.maturity.label}</div>
-        <div class="kpi-value ${kpis.maturity.type}">${kpis.maturity.value}</div>
-        <div class="kpi-sub">из ${kpis.maturity.max} · ${kpis.maturity.dimensions}</div>
-      `;
-    }
-    if (kpiCards[3]) {
-      kpiCards[3].innerHTML = `
-        <div class="kpi-label">${kpis.nextMilestone.label}</div>
-        <div class="kpi-value ${kpis.nextMilestone.type}">${kpis.nextMilestone.value}</div>
-        <div class="kpi-sub">${kpis.nextMilestone.name} · ${kpis.nextMilestone.date}</div>
+    // KPI strip
+    const kpiStrip = document.getElementById('kpi-strip');
+    if (kpiStrip) {
+      kpiStrip.innerHTML = `
+        <div class="kpi-card">
+          <div class="kpi-label">${kpis.deadline.label}</div>
+          <div class="kpi-value ${kpis.deadline.type}">${kpis.deadline.value}</div>
+          <div class="kpi-sub">${kpis.deadline.date}</div>
+        </div>
+        <div class="kpi-card kpi-link" data-goto="participants">
+          <div class="kpi-label">${kpis.tasks.label}</div>
+          <div class="kpi-value ${kpis.tasks.type}">${kpis.tasks.value}</div>
+          <div class="kpi-sub">${kpis.tasks.issues.join(' · ')}</div>
+        </div>
+        <div class="kpi-card kpi-link" data-goto="methodology">
+          <div class="kpi-label">${kpis.maturity.label}</div>
+          <div class="kpi-value ${kpis.maturity.type}">${kpis.maturity.value}</div>
+          <div class="kpi-sub">из ${kpis.maturity.max} · ${kpis.maturity.dimensions}</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">${kpis.nextMilestone.label}</div>
+          <div class="kpi-value ${kpis.nextMilestone.type}">${kpis.nextMilestone.value}</div>
+          <div class="kpi-sub">${kpis.nextMilestone.name} · ${kpis.nextMilestone.date}</div>
+        </div>
       `;
     }
 
     // Roadmap
-    const timeline = document.querySelector('.timeline');
+    const timeline = document.getElementById('roadmap-timeline');
     if (timeline) {
       timeline.innerHTML = portalData.roadmap.milestones.map(ms => `
         <div class="milestone">
@@ -2066,8 +1924,14 @@
       `).join('');
     }
 
+    // Decisions title
+    const decisionTitle = document.getElementById('decisions-title');
+    if (decisionTitle && portalData.decisions.meeting_date) {
+      decisionTitle.textContent = `Решения встречи ${portalData.decisions.meeting_date}`;
+    }
+
     // Decisions
-    const decisionList = document.querySelector('.decision-list');
+    const decisionList = document.getElementById('decisions-list');
     if (decisionList) {
       decisionList.innerHTML = portalData.decisions.items.map(item => `
         <div class="decision-item"><span class="decision-code">${item.code}</span><span>${item.text}</span></div>
@@ -2075,7 +1939,7 @@
     }
 
     // Next steps
-    const stepsList = document.querySelector('.steps-list');
+    const stepsList = document.getElementById('steps-list');
     if (stepsList) {
       stepsList.innerHTML = portalData.nextSteps.map(step => `
         <li class="step-item"><span class="step-num">${step.number}</span><span>${step.text}</span></li>
