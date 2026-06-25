@@ -1404,7 +1404,7 @@
           </div>
           <div class="conn-wave-chart">
             <div class="conn-chart-container">
-              <canvas id="conn-waveCanvas" class="conn-canvas"></canvas>
+              <canvas id="conn-waveCanvas" class="conn-canvas" width="800" height="240"></canvas>
             </div>
           </div>
         </div>
@@ -1453,6 +1453,14 @@
   function switchTab(id) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === id));
+
+    // Перерисовываем волновой график если открыт tab connectivity
+    if (id === 'connectivity') {
+      setTimeout(() => {
+        const weekData = [45, 42, 40, 38, 38, 37, 35];
+        connDrawWaveChart(weekData);
+      }, 50);
+    }
   }
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1592,11 +1600,22 @@
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
 
-    const width = canvas.width;
-    const height = canvas.height;
+    // Используем явно заданные размеры либо offsetWidth
+    let width = canvas.width || canvas.offsetWidth || 800;
+    let height = canvas.height || canvas.offsetHeight || 240;
+
+    // Если размеры получены из атрибутов, используем их прямо
+    // иначе обновляем canvas width/height
+    if (!canvas.width || canvas.width === 0) {
+      canvas.width = width;
+    }
+    if (!canvas.height || canvas.height === 0) {
+      canvas.height = height;
+    }
+
+    width = canvas.width;
+    height = canvas.height;
     const padding = 40;
     const graphWidth = width - 2 * padding;
     const graphHeight = height - 2 * padding;
@@ -1866,6 +1885,14 @@
     connLoadMetrics();
     connSetupResponsive();
     setInterval(connUpdateTimer, 60000);
+
+    // Убедимся что график отрисуется при загрузке страницы
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const weekData = [45, 42, 40, 38, 38, 37, 35];
+        connDrawWaveChart(weekData);
+      }, 100);
+    });
   }
 </script>
 
