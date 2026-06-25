@@ -1865,6 +1865,14 @@
         <li class="step-item"><span class="step-num">${step.number}</span><span>${step.text}</span></li>
       `).join('');
     }
+
+    // Setup KPI link listeners
+    document.querySelectorAll('.kpi-link').forEach(card => {
+      card.addEventListener('click', () => {
+        const tabId = card.dataset.goto;
+        if (tabId) switchTab(tabId);
+      });
+    });
   }
 
   function renderMethodologyTab() {
