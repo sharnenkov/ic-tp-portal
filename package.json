@@ -1,0 +1,7 @@
+{
+  "name": "ic-tp-portal",
+  "version": "1.0.0",
+  "description": "IC.TP Portal - система управления проектом с дашбордом связности",
+  "type": "module",
+  "private": true
+}
