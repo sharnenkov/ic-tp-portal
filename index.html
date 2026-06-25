@@ -1368,7 +1368,7 @@
           </div>
           <div class="conn-display">
             <div class="conn-value" id="conn-entropyValue">81</div>
-            <div class="conn-unit">/ 100</div>
+            <div class="conn-unit">/ 100 <span id="conn-weekAvg" style="margin-left:8px;color:var(--conn-dim);font-size:0.75em;font-weight:400"></span></div>
           </div>
         </div>
 
@@ -1797,8 +1797,9 @@
 
     const daysCollected = Object.keys(history).length;
     const daysUntilFull = Math.max(0, 7 - daysCollected);
+    const weekAverage = Math.round(values.reduce((a, b) => a + b, 0) / values.length);
 
-    return { values, dates, daysCollected, daysUntilFull };
+    return { values, dates, daysCollected, daysUntilFull, weekAverage };
   }
 
   // Load Connectivity Metrics
@@ -1815,6 +1816,9 @@
       // Save to history and get week data
       connSaveMetricHistory(overallValue);
       const weekData = connGetWeekData(overallValue);
+
+      // Display week average next to current value
+      document.getElementById('conn-weekAvg').textContent = `(${weekData.weekAverage} за 7 дней)`;
 
       // Update marker
       connAnimatePointer();
