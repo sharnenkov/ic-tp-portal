@@ -1371,7 +1371,7 @@
               <div class="conn-value" id="conn-entropyValue">81</div>
               <div class="conn-unit">/ 100</div>
             </div>
-            <div id="conn-weekAvg" style="color:var(--conn-dim);font-size:13px;margin-top:-4px;text-align:right"></div>
+            <div id="conn-weekAvg" style="color:var(--conn-dim);font-size:13px;margin-top:-8px;text-align:right"></div>
           </div>
         </div>
 
@@ -1821,7 +1821,7 @@
       const weekData = connGetWeekData(overallValue);
 
       // Display week average next to current value
-      document.getElementById('conn-weekAvg').textContent = `(${weekData.weekAverage} за 7 дней)`;
+      document.getElementById('conn-weekAvg').textContent = `Средняя за 7 дней: ${weekData.weekAverage}`;
 
       // Update marker
       connAnimatePointer();
