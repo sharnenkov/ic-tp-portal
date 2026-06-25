@@ -1990,6 +1990,156 @@
     });
   }
 
+  // ═══════════════════════════════════════════════════════════════
+  // ПОРТАЛ: Загрузка динамических данных
+  // ═══════════════════════════════════════════════════════════════
+
+  let portalData = null;
+
+  async function loadPortalData() {
+    try {
+      const response = await fetch('/api/portal-data');
+      if (!response.ok) throw new Error('Failed to load portal data');
+      portalData = await response.json();
+      renderPortalTabs();
+      console.log('✅ Данные портала загружены:', portalData);
+    } catch (err) {
+      console.error('❌ Ошибка загрузки данных портала:', err);
+    }
+  }
+
+  function renderPortalTabs() {
+    if (!portalData) return;
+
+    renderOverviewTab();
+    renderMethodologyTab();
+    renderParticipantsTab();
+    renderToolsTab();
+  }
+
+  function renderOverviewTab() {
+    const kpis = portalData.kpis;
+
+    // KPI cards
+    const kpiCards = document.querySelectorAll('.kpi-card');
+    if (kpiCards[0]) {
+      kpiCards[0].innerHTML = `
+        <div class="kpi-label">${kpis.deadline.label}</div>
+        <div class="kpi-value ${kpis.deadline.type}" id="kpi-days">${kpis.deadline.value}</div>
+        <div class="kpi-sub">${kpis.deadline.date}</div>
+      `;
+    }
+    if (kpiCards[1]) {
+      kpiCards[1].innerHTML = `
+        <div class="kpi-label">${kpis.tasks.label}</div>
+        <div class="kpi-value ${kpis.tasks.type}">${kpis.tasks.value}</div>
+        <div class="kpi-sub">${kpis.tasks.issues.join(' · ')}</div>
+      `;
+    }
+    if (kpiCards[2]) {
+      kpiCards[2].innerHTML = `
+        <div class="kpi-label">${kpis.maturity.label}</div>
+        <div class="kpi-value ${kpis.maturity.type}">${kpis.maturity.value}</div>
+        <div class="kpi-sub">из ${kpis.maturity.max} · ${kpis.maturity.dimensions}</div>
+      `;
+    }
+    if (kpiCards[3]) {
+      kpiCards[3].innerHTML = `
+        <div class="kpi-label">${kpis.nextMilestone.label}</div>
+        <div class="kpi-value ${kpis.nextMilestone.type}">${kpis.nextMilestone.value}</div>
+        <div class="kpi-sub">${kpis.nextMilestone.name} · ${kpis.nextMilestone.date}</div>
+      `;
+    }
+
+    // Roadmap
+    const timeline = document.querySelector('.timeline');
+    if (timeline) {
+      timeline.innerHTML = portalData.roadmap.milestones.map(ms => `
+        <div class="milestone">
+          <div class="ms-dot ${ms.status}"></div>
+          <div class="ms-info">
+            <div class="ms-label">${ms.name}</div>
+            <div class="ms-date">${ms.date}</div>
+            <div class="ms-badge"><span class="badge badge-${ms.status === 'done' ? 'green' : ms.status === 'active' ? 'accent' : 'muted'}">${ms.badge}</span></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Decisions
+    const decisionList = document.querySelector('.decision-list');
+    if (decisionList) {
+      decisionList.innerHTML = portalData.decisions.items.map(item => `
+        <div class="decision-item"><span class="decision-code">${item.code}</span><span>${item.text}</span></div>
+      `).join('');
+    }
+
+    // Next steps
+    const stepsList = document.querySelector('.steps-list');
+    if (stepsList) {
+      stepsList.innerHTML = portalData.nextSteps.map(step => `
+        <li class="step-item"><span class="step-num">${step.number}</span><span>${step.text}</span></li>
+      `).join('');
+    }
+  }
+
+  function renderMethodologyTab() {
+    const methodology = portalData.methodology;
+
+    // Average score
+    const avg = (methodology.dimensions.reduce((sum, d) => sum + d.score, 0) / methodology.dimensions.length).toFixed(1);
+    const avgElement = document.getElementById('maturity-avg');
+    if (avgElement) avgElement.textContent = avg;
+
+    // Bars
+    const barsElement = document.getElementById('maturity-bars');
+    if (barsElement) {
+      barsElement.innerHTML = methodology.dimensions.map((d, i) => `
+        <div class="maturity-bar">
+          <div class="bar-label">${d.name}</div>
+          <div class="bar-fill" style="width:${(d.score / methodology.maxScore) * 100}%">
+            <span class="bar-value">${d.score}/${methodology.maxScore}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  function renderParticipantsTab() {
+    const participantsContainer = document.getElementById('participants-list');
+    if (!participantsContainer) return;
+
+    participantsContainer.innerHTML = portalData.participants.map(p => `
+      <div class="card">
+        <div class="card-header"><span class="card-title">${p.name}</span><span class="badge">${p.role}</span></div>
+        <div class="card-body">
+          <p><strong>Expertise:</strong> ${p.expertise}</p>
+          <p><strong>GitHub:</strong> <a href="https://github.com/${p.github.substring(1)}" target="_blank">${p.github}</a></p>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderToolsTab() {
+    const toolsContainer = document.getElementById('tools-list');
+    if (!toolsContainer) return;
+
+    toolsContainer.innerHTML = portalData.tools.map(tool => `
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">${tool.name}</span>
+          <span class="badge badge-${tool.status === 'production' ? 'green' : tool.status === 'planning' ? 'amber' : 'muted'}">
+            ${tool.status === 'production' ? '✓ Production' : tool.status === 'phase1' ? '● Phase 1' : '⏳ Planning'}
+          </span>
+        </div>
+        <div class="card-body">
+          <p><strong>${tool.category}</strong></p>
+          <p>${tool.description}</p>
+        </div>
+      </div>
+    `).join('');
+  }
+
   // Refresh metrics from API
   async function connRefreshMetrics() {
     const btn = document.getElementById('conn-refresh-btn');
@@ -2028,6 +2178,11 @@
       }, 3000);
     }
   }
+
+  // Init portal data
+  window.addEventListener('DOMContentLoaded', () => {
+    loadPortalData();
+  });
 
   // Init connectivity dashboard
   if (document.getElementById('conn-waveCanvas')) {
