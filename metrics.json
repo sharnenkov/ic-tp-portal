@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-06-25T13:38:00.698Z",
+  "documentation": {
+    "score": 85
+  },
+  "knowledge_management": {
+    "score": 70
+  },
+  "guardian_rules": {
+    "violations": 0,
+    "score": 100
+  },
+  "codeQuality": {
+    "score": 82
+  },
+  "codeReview": {
+    "openPRs": 0,
+    "avgReviewHours": 0,
+    "reviewedCount": 0,
+    "score": 100
+  },
+  "project_management": {
+    "open_issues": 0,
+    "closed_issues": 0,
+    "score": 100
+  },
+  "team_coordination": {
+    "active_members": 0,
+    "score": 30
+  },
+  "architecture": {
+    "score": 81
+  },
+  "system_reliability": {
+    "score": 88
+  },
+  "issues": {
+    "openCount": 0,
+    "score": 100
+  },
+  "commitRegularity": {
+    "weeklyCommits": 0,
+    "score": 30
+  },
+  "testCoverage": {
+    "score": 78
+  },
+  "stability": {
+    "score": 88
+  },
+  "testReliability": {
+    "score": 84
+  },
+  "overallConnectivity": 82
+}
