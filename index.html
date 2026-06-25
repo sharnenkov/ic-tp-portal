@@ -1940,8 +1940,25 @@
       <div class="card">
         <div class="card-header"><span class="card-title">${p.name}</span><span class="badge">${p.role}</span></div>
         <div class="card-body">
-          <p><strong>Expertise:</strong> ${p.expertise}</p>
-          <p><strong>GitHub:</strong> <a href="https://github.com/${p.github.substring(1)}" target="_blank">${p.github}</a></p>
+          <p style="margin-bottom:8px"><strong>Expertise:</strong> ${p.expertise}</p>
+          <p style="margin-bottom:12px"><strong>GitHub:</strong> <a href="https://github.com/${p.github.substring(1)}" target="_blank" style="color:var(--accent);text-decoration:none">${p.github}</a></p>
+
+          ${p.tasks ? `
+            <div style="border-top:1px solid var(--border);padding-top:12px">
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-light);margin-bottom:8px">Задачи</div>
+              <ul style="list-style:none;margin:0;padding:0;font-size:13px">
+                ${p.tasks.map(t => `
+                  <li style="margin-bottom:6px;display:flex;gap:8px;align-items:center">
+                    <span style="font-size:11px;color:var(--muted-light);font-family:var(--mono);min-width:40px">${t.id}</span>
+                    <span>${t.text}</span>
+                    <span class="badge badge-${t.status === 'done' ? 'green' : t.status === 'in-progress' ? 'accent' : 'muted'}" style="margin-left:auto;flex-shrink:0">
+                      ${t.status === 'done' ? '✓' : t.status === 'in-progress' ? '●' : '○'} ${t.status === 'done' ? 'Done' : t.status === 'in-progress' ? 'In Progress' : 'Todo'}
+                    </span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          ` : ''}
         </div>
       </div>
     `).join('');

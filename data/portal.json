@@ -103,19 +103,32 @@
       "role": "Реализатор",
       "name": "Алексей Шарненков",
       "expertise": "Архитектура, IC.TP координация",
-      "github": "@sharnenkov"
+      "github": "@sharnenkov",
+      "tasks": [
+        { "id": "#15", "text": "Подготовить онбординг для Рубена", "status": "in-progress" },
+        { "id": "#19", "text": "Согласовать архитектуру переговорной", "status": "in-progress" },
+        { "id": "#21", "text": "Закрыть Issue #17 (Milestone)", "status": "todo" }
+      ]
     },
     {
       "role": "Архитектор",
       "name": "Денис Рудоманенко",
       "expertise": "Backend, GitHub Actions, Страж",
-      "github": "@denisrudomanenko"
+      "github": "@denisrudomanenko",
+      "tasks": [
+        { "id": "#26", "text": "Смержить PR #26 (Страж Phase 1)", "status": "in-progress" },
+        { "id": "#25", "text": "Настроить GitHub Actions workflow", "status": "done" }
+      ]
     },
     {
       "role": "Эксперт",
       "name": "Вячеслав (Bronislav28)",
       "expertise": "Методология, документация",
-      "github": "@Bronislav28"
+      "github": "@Bronislav28",
+      "tasks": [
+        { "id": "#20", "text": "Обновить методологический корпус", "status": "in-progress" },
+        { "id": "#22", "text": "Зафиксировать рефлексию встречи 15.06", "status": "done" }
+      ]
     }
   ],
 
