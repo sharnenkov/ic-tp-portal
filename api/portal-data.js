@@ -3,6 +3,9 @@
  * Читает данные из data/portal.json
  */
 
+import fs from 'fs';
+import path from 'path';
+
 export default async (req, res) => {
   // CORS headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -17,9 +20,11 @@ export default async (req, res) => {
 
   try {
     // Read portal data from JSON file
-    const data = await import('../data/portal.json', { assert: { type: 'json' } });
+    const filePath = path.join(process.cwd(), 'data', 'portal.json');
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const data = JSON.parse(fileContent);
 
-    res.status(200).json(data.default || data);
+    res.status(200).json(data);
   } catch (error) {
     console.error('❌ Error loading portal data:', error);
     res.status(500).json({ error: error.message });
