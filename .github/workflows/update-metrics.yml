@@ -25,15 +25,12 @@ jobs:
       - name: 📊 Запустить скрипт обновления метрик
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cd ic-tp-portal
-          node fetch-metrics.js
+        run: node fetch-metrics.js
 
       - name: 💾 Коммитить обновлённые метрики
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
-          cd ic-tp-portal
           if git diff --quiet metrics.json; then
             echo "✓ Метрики не изменились"
           else
