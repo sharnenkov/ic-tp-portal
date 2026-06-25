@@ -40,9 +40,27 @@
       --mono:          'SF Mono', 'Fira Code', monospace;
       --radius:        12px;
       --transition:    150ms ease-out;
+      /* Connectivity dashboard colors */
+      --conn-bg:       #09090f;
+      --conn-surface:  #111119;
+      --conn-surface2: #16161f;
+      --conn-border:   #1e1e30;
+      --conn-border2:  #2a2a40;
+      --conn-text:     #e2e2f0;
+      --conn-muted:    #7878a0;
+      --conn-dim:      #4a4a68;
+      --conn-blue:     #5b7cf7;
+      --conn-green:    #4fb87c;
+      --conn-amber:    #f79a4f;
+      --conn-red:      #e05050;
     }
 
-    body {
+    @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  body {
       background: var(--bg);
       background-image:
         radial-gradient(ellipse 80% 50% at 15% 10%, rgba(99,102,241,0.10) 0%, transparent 60%),
@@ -568,6 +586,307 @@
       .kpi-strip { grid-template-columns: 1fr 1fr; }
       .link-grid { grid-template-columns: 1fr; }
     }
+
+    /* ─── CONNECTIVITY DASHBOARD ──────────────────────────── */
+    .conn-card {
+      background: var(--conn-surface);
+      border: 1px solid var(--conn-border);
+      border-radius: 12px;
+      padding: 40px;
+      margin-bottom: 32px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .conn-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .conn-info { flex: 1; min-width: 200px; }
+    .conn-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--conn-text);
+      margin-bottom: 4px;
+    }
+
+    .conn-subtitle {
+      color: var(--conn-muted);
+      font-size: 13px;
+      margin-bottom: 0;
+    }
+
+    .conn-display {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .conn-value {
+      font-size: 56px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #4fb87c, #f79a4f, #e05050);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .conn-unit {
+      color: var(--conn-muted);
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .conn-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--conn-muted);
+      margin-top: 8px;
+    }
+
+    .conn-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .conn-scale-wrapper {
+      margin-bottom: 40px;
+    }
+
+    .conn-scale-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--conn-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .conn-scale-legend {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: var(--conn-muted);
+      font-weight: 500;
+    }
+
+    .conn-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .conn-legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .conn-scale-bar {
+      height: 48px;
+      background: linear-gradient(90deg,
+        #e05050 0%,
+        #f5765f 25%,
+        #f79a4f 50%,
+        #7ed8a8 75%,
+        #4fb87c 100%
+      );
+      border-radius: 8px;
+      position: relative;
+      overflow: visible;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    .conn-scale-bar::before {
+      content: var(--marker-value);
+      position: absolute;
+      top: 56px;
+      left: var(--marker-left);
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: bold;
+      color: #e2e2f0;
+      text-align: center;
+      width: 30px;
+    }
+
+    .conn-scale-bar::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: var(--marker-left);
+      transform: translate(-50%, -50%);
+      width: 28px;
+      height: 56px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 3px;
+      box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.2),
+                  0 0 12px var(--marker-glow),
+                  0 0 20px var(--marker-glow-mid),
+                  0 0 32px var(--marker-glow-light);
+      z-index: 10;
+    }
+
+    .conn-chart-section {
+      margin-bottom: 32px;
+    }
+
+    .conn-chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .conn-chart-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--conn-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .conn-chart-info {
+      font-size: 11px;
+      color: var(--conn-muted);
+    }
+
+    .conn-wave-chart {
+      height: 120px;
+      background: var(--conn-surface2);
+      border: 1px solid var(--conn-border);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      padding: 16px;
+    }
+
+    .conn-chart-container {
+      position: relative;
+      height: 100%;
+    }
+
+    .conn-canvas { width: 100%; height: 100%; display: block; }
+
+    .conn-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .conn-metric-card {
+      background: var(--conn-surface2);
+      border: 1px solid var(--conn-border);
+      border-radius: 8px;
+      padding: 16px;
+      transition: all 0.3s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .conn-metric-card:hover {
+      border-color: var(--conn-border2);
+      box-shadow: 0 4px 16px rgba(91,124,247,0.1);
+      transform: translateY(-2px);
+      background: var(--conn-border);
+    }
+
+    .conn-metric-card.good {
+      border-left: 3px solid var(--conn-green);
+    }
+
+    .conn-metric-card.warning {
+      border-left: 3px solid var(--conn-amber);
+    }
+
+    .conn-metric-card.critical {
+      border-left: 3px solid var(--conn-red);
+    }
+
+    .conn-metric-icon { font-size: 20px; margin-bottom: 8px; }
+    .conn-metric-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--conn-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .conn-metric-value {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .conn-metric-impact {
+      font-size: 12px;
+      color: var(--conn-dim);
+      margin-bottom: 8px;
+    }
+
+    .conn-metric-impact.positive {
+      color: var(--conn-green);
+      font-weight: 600;
+    }
+
+    .conn-metric-impact.negative {
+      color: var(--conn-red);
+      font-weight: 600;
+    }
+
+    .conn-metric-details {
+      display: none;
+      font-size: 11px;
+      color: var(--conn-muted);
+      padding-top: 8px;
+      border-top: 1px solid var(--conn-border);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .conn-metric-card.expanded .conn-metric-details {
+      display: block;
+    }
+
+    .conn-guide-section {
+      background: rgba(91,124,247,0.15);
+      border: 1px solid var(--conn-blue);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 32px;
+      font-size: 13px;
+      color: var(--conn-muted);
+      line-height: 1.8;
+    }
+
+    .conn-guide-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--conn-text);
+      margin-bottom: 12px;
+    }
+
+    .conn-guide-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .conn-guide-row strong {
+      color: var(--conn-text);
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -583,6 +902,7 @@
 
   <nav class="tabs">
     <button class="tab-btn active" data-tab="overview">Сводная</button>
+    <button class="tab-btn" data-tab="connectivity">Связность системы</button>
     <button class="tab-btn" data-tab="methodology">Методология</button>
     <button class="tab-btn" data-tab="participants">Участники</button>
     <button class="tab-btn" data-tab="tools">Инструменты</button>
@@ -1026,6 +1346,106 @@
     </div>
   </div>
 
+  <!-- ══════════════════════════════════════════════════════ TAB: СВЯЗНОСТЬ СИСТЕМЫ -->
+  <div id="connectivity" class="tab-panel">
+    <div style="max-width:1200px;margin:0 auto">
+
+      <div class="conn-card">
+        <!-- Header -->
+        <div class="conn-header">
+          <div class="conn-info">
+            <div class="conn-title">Связность системы</div>
+            <div class="conn-subtitle">Уровень организованности и качества репо (100 = идеально)</div>
+            <div class="conn-meta">
+              <div class="conn-meta-item">
+                <div style="width:6px;height:6px;background:#4fb87c;border-radius:50%;animation:pulse 2s ease-in-out infinite"></div>
+                Обновлено в <span id="conn-updateTime">15:23</span>
+              </div>
+              <div class="conn-meta-item">
+                Обновится через <span id="conn-nextUpdate">5 мин</span>
+              </div>
+            </div>
+          </div>
+          <div class="conn-display">
+            <div class="conn-value" id="conn-entropyValue">81</div>
+            <div class="conn-unit">/ 100</div>
+          </div>
+        </div>
+
+        <!-- Scale -->
+        <div class="conn-scale-wrapper">
+          <div class="conn-scale-title">Спектр связности</div>
+          <div class="conn-scale-legend">
+            <div class="conn-legend-item">
+              <div class="conn-legend-dot" style="background: #e05050;"></div>
+              <span>Слабая (0-25)</span>
+            </div>
+            <div class="conn-legend-item">
+              <div class="conn-legend-dot" style="background: #f79a4f;"></div>
+              <span>Средняя (25-50)</span>
+            </div>
+            <div class="conn-legend-item">
+              <div class="conn-legend-dot" style="background: #7ed8a8;"></div>
+              <span>Хорошая (50-75)</span>
+            </div>
+            <div class="conn-legend-item">
+              <div class="conn-legend-dot" style="background: #4fb87c;"></div>
+              <span>Идеальная (75-100)</span>
+            </div>
+          </div>
+          <div class="conn-scale-bar" id="conn-scale-bar"></div>
+        </div>
+
+        <!-- Wave Chart -->
+        <div class="conn-chart-section">
+          <div class="conn-chart-header">
+            <div class="conn-chart-label">История за 7 дней <span id="conn-week-range" style="color:var(--conn-muted);font-size:13px">(45 → 35)</span></div>
+            <div class="conn-chart-info">Линия показывает динамику связности системы каждый день</div>
+          </div>
+          <div class="conn-wave-chart">
+            <div class="conn-chart-container">
+              <canvas id="conn-waveCanvas" class="conn-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metrics -->
+        <div class="conn-chart-label" style="margin-top:64px;display:block;margin-bottom:24px">Факторы влияющие на связность системы</div>
+        <div class="conn-metrics-grid" id="conn-metrics-grid"></div>
+
+        <!-- Guide -->
+        <div class="conn-guide-section">
+          <div class="conn-guide-title">📖 Как читать Связность системы</div>
+
+          <div class="conn-guide-row">
+            <strong>0–25</strong>
+            <div>🔴 <strong>Слабая</strong> — много выявленных нарушений, система расползается. Срочное вмешательство!</div>
+          </div>
+
+          <div class="conn-guide-row">
+            <strong>25–50</strong>
+            <div>🟠 <strong>Средняя</strong> — Страж нашёл проблемы. Нужна активная работа по улучшению</div>
+          </div>
+
+          <div class="conn-guide-row">
+            <strong>50–75</strong>
+            <div>🟡 <strong>Хорошая</strong> — проект в порядке, но есть области для оптимизации и улучшения</div>
+          </div>
+
+          <div class="conn-guide-row">
+            <strong>75–100</strong>
+            <div>🟢 <strong>Идеальная</strong> — отличное состояние! Репо хорошо организован и поддерживается</div>
+          </div>
+
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--conn-blue)">
+            <strong>💡 Совет:</strong> Кликните на метрику чтобы увидеть как она считается. История обновляется каждые 5 минут.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </main>
 
 <script>
@@ -1148,6 +1568,305 @@
       setTimeout(() => { el.style.width = (dims[i].score * 10) + '%'; }, i * 60);
     });
   });
+
+  // ── Connectivity Dashboard ────────────────────────────
+
+  // Get color by value (согласно спектру связности)
+  function connGetColorByValue(value) {
+    if (value < 25) return '#e05050'; // Слабая - красный
+    if (value < 50) return '#f79a4f'; // Средняя - оранжевый
+    if (value < 75) return '#f5d547'; // Хорошая - жёлтый
+    return '#4fb87c'; // Идеальная - зелёный
+  }
+
+  function connHexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  // Wave Chart with Grid and Dynamic Colors
+  function connDrawWaveChart(data) {
+    const canvas = document.getElementById('conn-waveCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    const width = canvas.width;
+    const height = canvas.height;
+    const padding = 40;
+    const graphWidth = width - 2 * padding;
+    const graphHeight = height - 2 * padding;
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(120, 120, 160, 0.1)';
+    ctx.lineWidth = 1;
+
+    for (let i = 0; i <= 4; i++) {
+      const y = padding + (i / 4) * graphHeight;
+      ctx.beginPath();
+      ctx.moveTo(padding, y);
+      ctx.lineTo(width - padding, y);
+      ctx.stroke();
+    }
+
+    // Y-axis values
+    ctx.fillStyle = '#7878a0';
+    ctx.font = '11px system-ui';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 4; i++) {
+      const value = 100 - (i * 25);
+      const y = padding + (i / 4) * graphHeight;
+      ctx.fillText(value, padding - 10, y + 4);
+    }
+
+    // Draw line with gradient colors
+    ctx.lineWidth = 2.5;
+
+    data.forEach((value, i) => {
+      if (i === 0) return;
+
+      const x1 = padding + ((i - 1) / (data.length - 1)) * graphWidth;
+      const y1 = padding + graphHeight - ((data[i - 1] / 100) * graphHeight);
+      const x2 = padding + (i / (data.length - 1)) * graphWidth;
+      const y2 = padding + graphHeight - ((value / 100) * graphHeight);
+
+      ctx.strokeStyle = connGetColorByValue(value);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    });
+
+    // Fill area under curve with gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, 'rgba(79, 184, 124, 0.2)');
+    gradient.addColorStop(0.5, 'rgba(245, 213, 71, 0.1)');
+    gradient.addColorStop(1, 'rgba(247, 154, 79, 0.05)');
+
+    ctx.beginPath();
+    data.forEach((value, i) => {
+      const x = padding + (i / (data.length - 1)) * graphWidth;
+      const y = padding + graphHeight - ((value / 100) * graphHeight);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.lineTo(width - padding, height - padding);
+    ctx.lineTo(padding, height - padding);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.strokeStyle = 'transparent';
+    ctx.stroke();
+
+    // Draw points with dynamic colors
+    ctx.strokeStyle = '#111119';
+    ctx.lineWidth = 2;
+
+    data.forEach((value, i) => {
+      const x = padding + (i / (data.length - 1)) * graphWidth;
+      const y = padding + graphHeight - ((value / 100) * graphHeight);
+
+      ctx.fillStyle = connGetColorByValue(value);
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Value label
+      ctx.fillStyle = connGetColorByValue(value);
+      ctx.font = 'bold 10px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(value, x, y - 12);
+    });
+
+    // X-axis labels
+    ctx.fillStyle = '#7878a0';
+    ctx.font = '10px system-ui';
+    ctx.textAlign = 'center';
+
+    const dates = ['-6d', '-5d', '-4d', '-3d', '-2d', '-1d', 'сегодня'];
+    dates.forEach((date, i) => {
+      const x = padding + (i / (data.length - 1)) * graphWidth;
+      ctx.fillText(date, x, height - 10);
+    });
+  }
+
+  // Animate Pointer
+  function connAnimatePointer() {
+    const scaleBar = document.getElementById('conn-scale-bar');
+    const entropyValueEl = document.getElementById('conn-entropyValue');
+
+    if (!entropyValueEl || !scaleBar) return;
+
+    const currentValue = parseInt(entropyValueEl.textContent);
+    const targetPercent = currentValue;
+    const color = connGetColorByValue(currentValue);
+
+    scaleBar.style.setProperty('--marker-left', targetPercent + '%');
+    scaleBar.style.setProperty('--marker-value', `'${currentValue}'`);
+    scaleBar.style.setProperty('--marker-glow', connHexToRgba(color, 0.8));
+    scaleBar.style.setProperty('--marker-glow-mid', connHexToRgba(color, 0.6));
+    scaleBar.style.setProperty('--marker-glow-light', connHexToRgba(color, 0.3));
+  }
+
+  // Interactive Metrics
+  function connSetupMetricsInteraction() {
+    document.querySelectorAll('.conn-metric-card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.classList.toggle('expanded');
+      });
+    });
+  }
+
+  // Update Timer
+  function connUpdateTimer() {
+    const now = new Date();
+    const timeString = now.toLocaleString('ru-RU', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    document.getElementById('conn-updateTime').textContent = timeString;
+
+    const nextUpdate = new Date(now.getTime() + 5 * 60000);
+    const diffMin = Math.floor((nextUpdate - now) / 60000);
+    document.getElementById('conn-nextUpdate').textContent = `${diffMin} мин`;
+  }
+
+  // Load Connectivity Metrics
+  async function connLoadMetrics() {
+    try {
+      const response = await fetch('./metrics.json');
+      if (!response.ok) throw new Error('Failed to load metrics');
+      const metrics = await response.json();
+
+      // Overall value
+      document.getElementById('conn-entropyValue').textContent = metrics.overallConnectivity;
+
+      // Update marker
+      connAnimatePointer();
+
+      // Update timer
+      connUpdateTimer();
+
+      // 7-day history (demo)
+      const weekData = [45, 42, 40, 38, 38, 37, 35];
+      document.getElementById('conn-week-range').textContent = `(${weekData[0]} → ${weekData[weekData.length - 1]})`;
+      connDrawWaveChart(weekData);
+
+      // Metrics cards (9 metrics)
+      const metricsData = [
+        {
+          icon: '📚',
+          name: 'Документированность',
+          value: metrics.documentation.score + '%',
+          impact: '+12 баллов',
+          positive: true,
+          details: 'Расчёт: покрытие документацией × 0.13 = +12 баллов бонуса'
+        },
+        {
+          icon: '🎓',
+          name: 'Управление знаниями',
+          value: metrics.knowledge_management.score,
+          impact: '+10 баллов',
+          positive: true,
+          details: 'Расчёт: наличие wiki, примеров, docs = +10 баллов'
+        },
+        {
+          icon: '🛡',
+          name: 'Дисциплина разработки',
+          value: metrics.guardian_rules.violations,
+          impact: metrics.guardian_rules.violations === 0 ? '+15 баллов' : '-' + (metrics.guardian_rules.violations * 5) + ' баллов',
+          positive: metrics.guardian_rules.violations === 0,
+          details: `Расчёт: ${metrics.guardian_rules.violations} нарушений Стража × 5 = штраф`
+        },
+        {
+          icon: '⚡',
+          name: 'Качество кода',
+          value: metrics.codeQuality.score,
+          impact: '+8 баллов',
+          positive: true,
+          details: 'Расчёт: средний скор linter + сложность = +8 баллов'
+        },
+        {
+          icon: '🔁',
+          name: 'Процесс Code Review',
+          value: metrics.codeReview.avgReviewHours.toFixed(1) + 'ч',
+          impact: metrics.codeReview.avgReviewHours < 4 ? '+10 баллов' : '-' + Math.round((metrics.codeReview.avgReviewHours - 4) * 2) + ' баллов',
+          positive: metrics.codeReview.avgReviewHours < 4,
+          details: `Расчёт: среднее время ревью ${metrics.codeReview.avgReviewHours.toFixed(1)}ч`
+        },
+        {
+          icon: '📊',
+          name: 'Управление проектом',
+          value: metrics.project_management.closed_issues + '/' + (metrics.project_management.total_issues || 0),
+          impact: '+12 баллов',
+          positive: true,
+          details: 'Расчёт: закрытые issues / всего issues = прогресс проекта'
+        },
+        {
+          icon: '👥',
+          name: 'Координация команды',
+          value: metrics.team_coordination.active_members,
+          impact: '+7 баллов',
+          positive: true,
+          details: `Расчёт: ${metrics.team_coordination.active_members} активных участников = здоровая командная динамика`
+        },
+        {
+          icon: '🏗️',
+          name: 'Качество архитектуры',
+          value: metrics.architecture.score,
+          impact: '+9 баллов',
+          positive: true,
+          details: 'Расчёт: модульность, зависимости, слои = +9 баллов'
+        },
+        {
+          icon: '✅',
+          name: 'Надёжность системы',
+          value: metrics.system_reliability.score,
+          impact: '+8 баллов',
+          positive: true,
+          details: 'Расчёт: стабильность деплоев, uptime = +8 баллов'
+        }
+      ];
+
+      const grid = document.getElementById('conn-metrics-grid');
+      grid.innerHTML = metricsData.map(m => `
+        <div class="conn-metric-card ${m.positive ? 'good' : 'critical'}">
+          <div class="conn-metric-icon">${m.icon}</div>
+          <div class="conn-metric-name">${m.name}</div>
+          <div class="conn-metric-value">${m.value}</div>
+          <div class="conn-metric-impact ${m.positive ? 'positive' : 'negative'}">${m.impact}</div>
+          <div class="conn-metric-details">
+            <strong>Расчёт:</strong> ${m.details}
+          </div>
+        </div>
+      `).join('');
+
+      connSetupMetricsInteraction();
+      console.log('✅ Метрики Связности загружены:', metrics);
+    } catch (err) {
+      console.error('❌ Ошибка загрузки метрик:', err);
+    }
+  }
+
+  // Responsive canvas
+  function connSetupResponsive() {
+    window.addEventListener('resize', () => {
+      const weekData = [45, 42, 40, 38, 38, 37, 35];
+      connDrawWaveChart(weekData);
+    });
+  }
+
+  // Init connectivity dashboard
+  if (document.getElementById('conn-waveCanvas')) {
+    connLoadMetrics();
+    connSetupResponsive();
+    setInterval(connUpdateTimer, 60000);
+  }
 </script>
 
 </body>
