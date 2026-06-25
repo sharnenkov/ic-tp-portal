@@ -1384,16 +1384,20 @@
 
   function diffDays(a, b) { return Math.max(0, Math.ceil((b - a) / 86400000)); }
 
-  document.getElementById('gen-date').textContent =
+  const genDate = document.getElementById('gen-date');
+  if (genDate) genDate.textContent =
     today.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
   const daysLeft = diffDays(today, deadline);
   const kpiDays  = document.getElementById('kpi-days');
-  kpiDays.textContent = daysLeft;
-  if (daysLeft <= 7)  kpiDays.className = 'kpi-value red';
-  else if (daysLeft <= 14) kpiDays.className = 'kpi-value amber';
+  if (kpiDays) {
+    kpiDays.textContent = daysLeft;
+    if (daysLeft <= 7)  kpiDays.className = 'kpi-value red';
+    else if (daysLeft <= 14) kpiDays.className = 'kpi-value amber';
+  }
 
-  document.getElementById('kpi-next-ms').textContent = diffDays(today, nextMs);
+  const kpiNextMs = document.getElementById('kpi-next-ms');
+  if (kpiNextMs) kpiNextMs.textContent = diffDays(today, nextMs);
 
   // ── Maturity bars + tooltips ───────────────────────────
   const dims = [
@@ -1430,7 +1434,8 @@
   ];
 
   const avg    = (dims.reduce((s, d) => s + d.score, 0) / dims.length).toFixed(1);
-  document.getElementById('maturity-avg').textContent = avg;
+  const maturityAvg = document.getElementById('maturity-avg');
+  if (maturityAvg) maturityAvg.textContent = avg;
 
   const barsEl = document.getElementById('maturity-bars');
 
