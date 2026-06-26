@@ -119,6 +119,119 @@ function countActiveMembersLastDays(commits, days = 2) {
   return authors.size;
 }
 
+// Dynamic metrics calculation
+async function calculateDocumentation(repoPath) {
+  // Count documentation files: README, docs/, wiki
+  let score = 50;
+
+  try {
+    // Check for README
+    const readme = await fetchGitHub(`/repos/${repoPath}/contents/README.md`);
+    if (readme && readme.length > 0) score += 15;
+
+    // Check for docs folder
+    const docs = await fetchGitHub(`/repos/${repoPath}/contents/docs`);
+    if (docs && docs.length > 0) score += 20;
+
+    // Check for CONTRIBUTING
+    const contributing = await fetchGitHub(`/repos/${repoPath}/contents/CONTRIBUTING.md`);
+    if (contributing && contributing.length > 0) score += 10;
+  } catch (e) {
+    // Ignore 404s
+  }
+
+  return Math.min(100, score);
+}
+
+async function calculateKnowledgeManagement(repoPath) {
+  // Knowledge management: CONTRIBUTING, changelog, examples, docs structure
+  let score = 40;
+
+  try {
+    const contributing = await fetchGitHub(`/repos/${repoPath}/contents/CONTRIBUTING.md`);
+    if (contributing && contributing.length > 0) score += 15;
+
+    const changelog = await fetchGitHub(`/repos/${repoPath}/contents/CHANGELOG.md`);
+    if (changelog && changelog.length > 0) score += 15;
+
+    const examples = await fetchGitHub(`/repos/${repoPath}/contents/examples`);
+    if (examples && examples.length > 0) score += 15;
+
+    const log = await fetchGitHub(`/repos/${repoPath}/contents/log`);
+    if (log && log.length > 0) score += 15;
+  } catch (e) {
+    // Ignore 404s
+  }
+
+  return Math.min(100, score);
+}
+
+async function calculateCodeQuality(repoPath) {
+  // Code quality: project structure, config files
+  let score = 50;
+
+  try {
+    // Check for src/ folder
+    const src = await fetchGitHub(`/repos/${repoPath}/contents/src`);
+    if (src && src.length > 0) score += 10;
+
+    // Check for .eslintrc or linting config
+    const eslint = await fetchGitHub(`/repos/${repoPath}/contents/.eslintrc.json`);
+    if (eslint && eslint.length > 0) score += 10;
+
+    // Check for prettier
+    const prettier = await fetchGitHub(`/repos/${repoPath}/contents/.prettierrc`);
+    if (prettier && prettier.length > 0) score += 10;
+
+    // Check for tsconfig (TypeScript quality)
+    const tsconfig = await fetchGitHub(`/repos/${repoPath}/contents/tsconfig.json`);
+    if (tsconfig && tsconfig.length > 0) score += 15;
+  } catch (e) {
+    // Ignore 404s
+  }
+
+  return Math.min(100, score);
+}
+
+async function calculateArchitectureQuality(repoPath) {
+  // Architecture: modular structure, documentation
+  let score = 50;
+
+  try {
+    // Check for src with subdirectories (modular)
+    const src = await fetchGitHub(`/repos/${repoPath}/contents/src`);
+    if (src && Array.isArray(src) && src.filter(f => f.type === 'dir').length > 3) score += 15;
+
+    // Check for deliverables/architecture docs
+    const deliverables = await fetchGitHub(`/repos/${repoPath}/contents/deliverables`);
+    if (deliverables && deliverables.length > 0) score += 20;
+
+    // Check for api/ or services/ (layered architecture)
+    const api = await fetchGitHub(`/repos/${repoPath}/contents/api`);
+    if (api && api.length > 0) score += 15;
+  } catch (e) {
+    // Ignore 404s
+  }
+
+  return Math.min(100, score);
+}
+
+async function calculateSystemReliability(commits) {
+  // Reliability: commit frequency, releases, CI/CD presence
+  let score = 50;
+
+  // More than 10 commits/week = stable
+  const weeklyCommits = countCommitsInDays(commits, 7);
+  if (weeklyCommits > 10) score += 20;
+  if (weeklyCommits > 20) score += 10;
+
+  // Regular commits (committed in last 3 days = active)
+  const recentCommits = countCommitsInDays(commits, 3);
+  if (recentCommits > 0) score += 20;
+
+  return Math.min(100, score);
+}
+
 export default async (req, res) => {
   // CORS headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -151,19 +264,29 @@ export default async (req, res) => {
     console.log(`  📋 Issues: ${openIssuesCount} открытых`);
     console.log(`  🔀 PR: ${openPRsCount} открытых`);
     console.log(`  📝 Commits: ${weeklyCommits} за неделю`);
+    console.log(`  👥 Active members: ${countActiveMembersLastDays(commits, 2)} за 2 дня`);
 
     // Guardian violations
     const violations = countGuardianViolations(issues);
 
+    // Calculate dynamic metrics in parallel
+    const [docScore, kmScore, cqScore, archScore, sysScore] = await Promise.all([
+      calculateDocumentation(REPO),
+      calculateKnowledgeManagement(REPO),
+      calculateCodeQuality(REPO),
+      calculateArchitectureQuality(REPO),
+      calculateSystemReliability(commits)
+    ]);
+
     const metrics = {
       timestamp: new Date().toISOString(),
-      documentation: { score: 85 },
-      knowledge_management: { score: 70 },
+      documentation: { score: docScore },
+      knowledge_management: { score: kmScore },
       guardian_rules: {
         violations,
         score: calculateGuardianScore(violations)
       },
-      codeQuality: { score: 82 },
+      codeQuality: { score: cqScore },
       codeReview: {
         openPRs: openPRsCount,
         avgReviewHours,
@@ -177,8 +300,8 @@ export default async (req, res) => {
         active_members: countActiveMembersLastDays(commits, 2),
         score: calculateTeamCoordinationScore(countActiveMembersLastDays(commits, 2))
       },
-      architecture: { score: 81 },
-      system_reliability: { score: 88 }
+      architecture: { score: archScore },
+      system_reliability: { score: sysScore }
     };
 
     // Calculate overall (9 metrics average)
