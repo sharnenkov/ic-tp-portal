@@ -134,6 +134,12 @@
 
   "bots": [
     {
+      "name": "Страж (Guardian)",
+      "github": "@guardian-bot",
+      "role": "Монитор гигиены",
+      "functionality": "Проверка структуры файлов, метаданные артефактов, правила PR, дисциплина разработки"
+    },
+    {
       "name": "Claude AI",
       "github": "@Den_Claude_Stack",
       "role": "Разработчик",
