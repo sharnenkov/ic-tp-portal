@@ -1595,9 +1595,7 @@
 
     scaleBar.style.setProperty('--marker-left', targetPercent + '%');
     scaleBar.style.setProperty('--marker-value', `'${currentValue}'`);
-    scaleBar.style.setProperty('--marker-glow', connHexToRgba(color, 0.8));
-    scaleBar.style.setProperty('--marker-glow-mid', connHexToRgba(color, 0.6));
-    scaleBar.style.setProperty('--marker-glow-light', connHexToRgba(color, 0.3));
+    // Свечение маркера остаётся фиолетовым (фирменный цвет)
   }
 
   // Interactive Metrics
