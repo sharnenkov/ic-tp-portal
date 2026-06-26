@@ -1791,6 +1791,13 @@
 
       connSetupMetricsInteraction();
       console.log('✅ Метрики Связности загружены:', metrics);
+      console.log('🚨 АКТИВНЫЕ УЧАСТНИКИ:', metrics.team_coordination.active_members, 'человек');
+      console.log('📋 Детальные данные:', {
+        activeMembers: metrics.team_coordination.active_members,
+        score: metrics.team_coordination.score,
+        openIssues: metrics.project_management.open_issues,
+        guardianViolations: metrics.guardian_rules.violations
+      });
     } catch (err) {
       console.error('❌ Ошибка загрузки метрик:', err);
     }
