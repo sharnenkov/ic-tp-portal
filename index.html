@@ -152,6 +152,29 @@
     .refresh-btn:active { transform: scale(0.97); }
     .refresh-btn svg { flex-shrink: 0; }
 
+    /* Зелёная кнопка обновления */
+    .refresh-btn-green {
+      background: var(--green-dim);
+      border-color: var(--green);
+      color: var(--green);
+      font-size: 16px;
+      padding: 6px 10px;
+    }
+    .refresh-btn-green:hover {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    /* Зелёное свечение при загрузке */
+    @keyframes green-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      50% { box-shadow: 0 0 8px 2px rgba(16, 185, 129, 0.3); }
+    }
+    .refresh-btn-green.loading {
+      animation: green-glow 1.5s ease-in-out infinite;
+    }
+
     /* ─── MAIN ────────────────────────────────────────────── */
     main {
       max-width: 1160px;
@@ -943,7 +966,7 @@
 
   <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
     <div class="header-meta" id="gen-date"></div>
-    <button class="refresh-btn" onclick="location.reload()">Обновить</button>
+    <button id="header-refresh-btn" class="refresh-btn refresh-btn-green" title="Обновить данные из GitHub">🔄</button>
   </div>
 </header>
 
@@ -1310,12 +1333,9 @@
           </div>
         </div>
 
-        <!-- Refresh Button -->
-        <div style="margin-top:64px;margin-bottom:24px;display:flex;gap:12px;align-items:center">
+        <!-- Metrics Title -->
+        <div style="margin-top:64px;margin-bottom:24px">
           <div class="conn-chart-label">Факторы влияющие на связность системы</div>
-          <button id="conn-refresh-btn" class="conn-refresh-btn" title="Получить актуальные данные из GitHub">
-            🔄 Обновить
-          </button>
         </div>
 
         <!-- Metrics -->
@@ -2007,11 +2027,10 @@
 
   // Refresh metrics from API
   async function connRefreshMetrics() {
-    const btn = document.getElementById('conn-refresh-btn');
+    const btn = document.getElementById('header-refresh-btn');
     if (!btn || btn.classList.contains('loading')) return;
 
     btn.classList.add('loading');
-    btn.textContent = '⏳ Загружаю...';
 
     try {
       const response = await fetch('/api/metrics');
@@ -2028,19 +2047,15 @@
       connLoadMetrics(newMetrics);
 
       btn.classList.remove('loading');
-      btn.textContent = '✅ Обновлено!';
-      setTimeout(() => {
-        btn.textContent = '🔄 Обновить';
-      }, 2000);
-
       console.log('✅ Метрики обновлены:', newMetrics);
+
+      // Показываем что обновилось
+      setTimeout(() => {
+        btn.classList.remove('loading');
+      }, 1500);
     } catch (err) {
       console.error('❌ Ошибка обновления:', err);
       btn.classList.remove('loading');
-      btn.textContent = '❌ Ошибка';
-      setTimeout(() => {
-        btn.textContent = '🔄 Обновить';
-      }, 3000);
     }
   }
 
@@ -2051,13 +2066,30 @@
 
   // Init connectivity dashboard
   if (document.getElementById('conn-waveCanvas')) {
-    // Setup refresh button
-    const refreshBtn = document.getElementById('conn-refresh-btn');
-    if (refreshBtn) {
-      refreshBtn.addEventListener('click', connRefreshMetrics);
+    // При загрузке страницы - загружаем актуальные данные из API
+    const initConnectivity = async () => {
+      try {
+        const response = await fetch('/api/metrics');
+        if (response.ok) {
+          const metrics = await response.json();
+          connLoadMetrics(metrics);
+        } else {
+          // Fallback to local file if API fails
+          connLoadMetrics();
+        }
+      } catch (err) {
+        console.warn('API недоступен, загружаем локальные данные:', err);
+        connLoadMetrics();
+      }
+    };
+
+    // Setup header refresh button
+    const headerRefreshBtn = document.getElementById('header-refresh-btn');
+    if (headerRefreshBtn) {
+      headerRefreshBtn.addEventListener('click', connRefreshMetrics);
     }
 
-    connLoadMetrics();
+    initConnectivity();
     connSetupResponsive();
     setInterval(connUpdateTimer, 60000);
 
