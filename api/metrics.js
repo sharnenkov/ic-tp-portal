@@ -98,23 +98,56 @@ function calculateTeamCoordinationScore(activeMembersLastDays) {
   return 95;
 }
 
-function countActiveMembersLastDays(commits, days = 2) {
+async function countActiveMembersLastDays(repoPath, days = 2) {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
-
   const authors = new Set();
 
-  (commits || []).forEach(c => {
-    try {
-      const date = new Date(c.commit?.author?.date || c.commit?.committer?.date);
-      if (date > cutoff) {
-        const author = c.commit?.author?.name || c.author?.login;
-        if (author) authors.add(author);
+  try {
+    // 1. Коммиты
+    const commits = await fetchGitHub(`/repos/${repoPath}/commits?per_page=100`);
+    (commits || []).forEach(c => {
+      try {
+        const date = new Date(c.commit?.author?.date || c.commit?.committer?.date);
+        if (date > cutoff) {
+          const author = c.commit?.author?.name || c.author?.login;
+          if (author) authors.add(author);
+        }
+      } catch {
+        // skip
       }
-    } catch {
-      // skip
-    }
-  });
+    });
+
+    // 2. Комментарии в issues
+    const issueComments = await fetchGitHub(`/repos/${repoPath}/issues/comments?per_page=100&sort=updated&direction=desc`);
+    (issueComments || []).forEach(comment => {
+      try {
+        const date = new Date(comment.updated_at);
+        if (date > cutoff) {
+          const author = comment.user?.login;
+          if (author) authors.add(author);
+        }
+      } catch {
+        // skip
+      }
+    });
+
+    // 3. Комментарии в PR
+    const prComments = await fetchGitHub(`/repos/${repoPath}/pulls/comments?per_page=100&sort=updated&direction=desc`);
+    (prComments || []).forEach(comment => {
+      try {
+        const date = new Date(comment.updated_at);
+        if (date > cutoff) {
+          const author = comment.user?.login;
+          if (author) authors.add(author);
+        }
+      } catch {
+        // skip
+      }
+    });
+  } catch (err) {
+    console.warn('Ошибка при подсчёте активных участников:', err);
+  }
 
   return authors.size;
 }
@@ -286,12 +319,13 @@ export default async (req, res) => {
     const violations = countGuardianViolations(issues);
 
     // Calculate dynamic metrics in parallel
-    const [docScore, kmScore, cqScore, archScore, sysScore] = await Promise.all([
+    const [docScore, kmScore, cqScore, archScore, sysScore, activeMembers] = await Promise.all([
       calculateDocumentation(REPO),
       calculateKnowledgeManagement(REPO),
       calculateCodeQuality(REPO),
       calculateArchitectureQuality(REPO),
-      calculateSystemReliability(commits)
+      calculateSystemReliability(commits),
+      countActiveMembersLastDays(REPO, 2)
     ]);
 
     const metrics = {
@@ -313,8 +347,8 @@ export default async (req, res) => {
         score: calculateProjectManagementScore(openIssuesCount)
       },
       team_coordination: {
-        active_members: countActiveMembersLastDays(commits, 2),
-        score: calculateTeamCoordinationScore(countActiveMembersLastDays(commits, 2))
+        active_members: activeMembers,
+        score: calculateTeamCoordinationScore(activeMembers)
       },
       architecture: { score: archScore },
       system_reliability: { score: sysScore }
