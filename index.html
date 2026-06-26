@@ -1792,8 +1792,10 @@
       connSetupMetricsInteraction();
       console.log('✅ Метрики Связности загружены:', metrics);
       console.log('🚨 АКТИВНЫЕ УЧАСТНИКИ:', metrics.team_coordination.active_members, 'человек');
-      console.log('📋 Детальные данные:', {
+      console.log('📋 ИМЕНА:', metrics.team_coordination.active_members_names?.join(', ') || 'N/A');
+      console.log('📊 Детальные данные:', {
         activeMembers: metrics.team_coordination.active_members,
+        names: metrics.team_coordination.active_members_names,
         score: metrics.team_coordination.score,
         openIssues: metrics.project_management.open_issues,
         guardianViolations: metrics.guardian_rules.violations

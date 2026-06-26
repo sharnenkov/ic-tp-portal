@@ -153,7 +153,7 @@ async function countActiveMembersLastDays(repoPath, days = 2) {
   console.log(`\n🚨 АКТИВНЫЕ УЧАСТНИКИ (${days} дней): ${authorsList.length} человек`);
   console.log('Имена:', authorsList.join(', '));
   console.log(`\n`);
-  return authors.size;
+  return { count: authors.size, names: authorsList };
 }
 
 // Dynamic metrics calculation
@@ -323,7 +323,7 @@ export default async (req, res) => {
     const violations = countGuardianViolations(issues);
 
     // Calculate dynamic metrics in parallel
-    const [docScore, kmScore, cqScore, archScore, sysScore, activeMembers] = await Promise.all([
+    const [docScore, kmScore, cqScore, archScore, sysScore, activeMembersData] = await Promise.all([
       calculateDocumentation(REPO),
       calculateKnowledgeManagement(REPO),
       calculateCodeQuality(REPO),
@@ -331,6 +331,8 @@ export default async (req, res) => {
       calculateSystemReliability(commits),
       countActiveMembersLastDays(REPO, 2)
     ]);
+
+    const activeMembers = activeMembersData.count;
 
     const metrics = {
       timestamp: new Date().toISOString(),
@@ -352,6 +354,7 @@ export default async (req, res) => {
       },
       team_coordination: {
         active_members: activeMembers,
+        active_members_names: activeMembersData.names,
         score: calculateTeamCoordinationScore(activeMembers)
       },
       architecture: { score: archScore },
