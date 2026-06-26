@@ -149,6 +149,7 @@ async function countActiveMembersLastDays(repoPath, days = 2) {
     console.warn('Ошибка при подсчёте активных участников:', err);
   }
 
+  console.log(`👥 Активные участники (${days} дней):`, Array.from(authors));
   return authors.size;
 }
 
