@@ -1850,11 +1850,6 @@
       // Получаем текущее значение связности
       const connValue = document.getElementById('conn-entropyValue')?.textContent || '-';
       kpiStrip.innerHTML = `
-        <div class="kpi-card kpi-link" data-goto="connectivity">
-          <div class="kpi-label">Степень связности</div>
-          <div class="kpi-value"><span class="green">${connValue}</span><span style="color:var(--muted-light)">/100</span></div>
-          <div class="kpi-sub">Порядок системы</div>
-        </div>
         <div class="kpi-card">
           <div class="kpi-label">${kpis.deadline.label}</div>
           <div class="kpi-value ${kpis.deadline.type}">${kpis.deadline.value}</div>
@@ -1864,6 +1859,11 @@
           <div class="kpi-label">${kpis.tasks.label}</div>
           <div class="kpi-value ${kpis.tasks.type}">${kpis.tasks.value}</div>
           <div class="kpi-sub">${kpis.tasks.issues.join(' · ')}</div>
+        </div>
+        <div class="kpi-card kpi-link" data-goto="connectivity">
+          <div class="kpi-label">Степень связности</div>
+          <div class="kpi-value"><span class="green">${connValue}</span><span style="color:var(--muted-light)">/100</span></div>
+          <div class="kpi-sub">Порядок системы</div>
         </div>
         <div class="kpi-card kpi-link" data-goto="methodology">
           <div class="kpi-label">${kpis.maturity.label}</div>
