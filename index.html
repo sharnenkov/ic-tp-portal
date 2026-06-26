@@ -1863,6 +1863,11 @@
       const connValue = document.getElementById('conn-entropyValue')?.textContent || '-';
       kpiStrip.innerHTML = `
         <div class="kpi-card">
+          <div class="kpi-label">${kpis.nextMilestone.label}</div>
+          <div class="kpi-value ${kpis.nextMilestone.type}">${kpis.nextMilestone.value}</div>
+          <div class="kpi-sub" style="white-space:nowrap">${kpis.nextMilestone.name} · ${kpis.nextMilestone.date}</div>
+        </div>
+        <div class="kpi-card">
           <div class="kpi-label">${kpis.deadline.label}</div>
           <div class="kpi-value ${kpis.deadline.type}">${kpis.deadline.value}</div>
           <div class="kpi-sub">${kpis.deadline.date}</div>
@@ -1881,11 +1886,6 @@
           <div class="kpi-label">${kpis.maturity.label}</div>
           <div class="kpi-value"><span class="green">${kpis.maturity.value}</span><span style="color:var(--muted-light)">/${kpis.maturity.max}</span></div>
           <div class="kpi-sub">${kpis.maturity.dimensions}</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">${kpis.nextMilestone.label}</div>
-          <div class="kpi-value ${kpis.nextMilestone.type}">${kpis.nextMilestone.value}</div>
-          <div class="kpi-sub">${kpis.nextMilestone.name} · ${kpis.nextMilestone.date}</div>
         </div>
       `;
     }
