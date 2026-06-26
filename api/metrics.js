@@ -8,12 +8,17 @@ const REPO = 'denisrudomanenko-stack/IC.TP';
 
 async function fetchGitHub(path) {
   try {
-    const response = await fetch(`https://api.github.com${path}`, {
-      headers: {
-        'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'ic-tp-metrics'
-      }
-    });
+    const headers = {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'ic-tp-metrics'
+    };
+
+    // Add token if available (for private repos)
+    if (process.env.GITHUB_TOKEN) {
+      headers['Authorization'] = `token ${process.env.GITHUB_TOKEN}`;
+    }
+
+    const response = await fetch(`https://api.github.com${path}`, { headers });
 
     if (!response.ok) {
       console.warn(`GitHub API: ${response.status} ${path}`);
