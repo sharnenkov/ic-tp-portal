@@ -966,7 +966,7 @@
 
   <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
     <div class="header-meta" id="gen-date"></div>
-    <button id="header-refresh-btn" class="refresh-btn refresh-btn-green" title="Обновить данные из GitHub">🔄</button>
+    <button id="header-refresh-btn" class="refresh-btn refresh-btn-green" title="Обновить данные из GitHub">Обновить</button>
   </div>
 </header>
 
@@ -1314,7 +1314,7 @@
             </div>
             <div class="conn-legend-item">
               <div class="conn-legend-dot" style="background: #4fb87c;"></div>
-              <span>Идеальная (75-100)</span>
+              <span>Порядок (75-100)</span>
             </div>
           </div>
           <div class="conn-scale-bar" id="conn-scale-bar"></div>
@@ -1362,7 +1362,7 @@
 
           <div class="conn-guide-row">
             <strong>75–100</strong>
-            <div>🟢 <strong>Идеальная</strong> — отличное состояние! Репо хорошо организован и поддерживается</div>
+            <div>🟢 <strong>Порядок</strong> — отличное состояние! Репо хорошо организован и поддерживается</div>
           </div>
 
           <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--conn-blue)">
@@ -1430,7 +1430,7 @@
     if (value < 25) return '#e05050'; // Хаос - красный
     if (value < 50) return '#f79a4f'; // Средняя - оранжевый
     if (value < 75) return '#f5d547'; // Хорошая - жёлтый
-    return '#4fb87c'; // Идеальная - зелёный
+    return '#4fb87c'; // Порядок - зелёный
   }
 
   function connHexToRgba(hex, alpha) {
