@@ -1671,6 +1671,12 @@
       const overallValue = metrics.overallConnectivity;
       document.getElementById('conn-entropyValue').textContent = overallValue;
 
+      // Обновляем KPI плашку на главной
+      const connValueEl = document.getElementById('overview-conn-value');
+      if (connValueEl) {
+        connValueEl.textContent = overallValue;
+      }
+
       // Save to history and get week data
       connSaveMetricHistory(overallValue);
       const weekData = connGetWeekData(overallValue);
@@ -1847,6 +1853,8 @@
     // KPI strip
     const kpiStrip = document.getElementById('kpi-strip');
     if (kpiStrip) {
+      // Получаем текущее значение связности
+      const connValue = document.getElementById('conn-entropyValue')?.textContent || '-';
       kpiStrip.innerHTML = `
         <div class="kpi-card">
           <div class="kpi-label">${kpis.deadline.label}</div>
@@ -1863,12 +1871,23 @@
           <div class="kpi-value ${kpis.maturity.type}">${kpis.maturity.value}</div>
           <div class="kpi-sub">из ${kpis.maturity.max} · ${kpis.maturity.dimensions}</div>
         </div>
+        <div class="kpi-card kpi-link" data-goto="connectivity">
+          <div class="kpi-label">Степень связности</div>
+          <div class="kpi-value green" id="overview-conn-value">-</div>
+          <div class="kpi-sub">Порядок системы</div>
+        </div>
         <div class="kpi-card">
           <div class="kpi-label">${kpis.nextMilestone.label}</div>
           <div class="kpi-value ${kpis.nextMilestone.type}">${kpis.nextMilestone.value}</div>
           <div class="kpi-sub">${kpis.nextMilestone.name} · ${kpis.nextMilestone.date}</div>
         </div>
       `;
+
+      // Обновляем значение связности в плашке
+      const connValueEl = document.getElementById('overview-conn-value');
+      if (connValueEl) {
+        connValueEl.textContent = connValue;
+      }
     }
 
     // Roadmap
