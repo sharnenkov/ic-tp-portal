@@ -1986,7 +1986,8 @@
     const participantsContainer = document.getElementById('participants-list');
     if (!participantsContainer) return;
 
-    participantsContainer.innerHTML = portalData.participants.map(p => `
+    // Люди
+    const peopleHTML = portalData.participants.map(p => `
       <div class="card">
         <div class="card-header"><span class="card-title">${p.name}</span><span class="badge">${p.role}</span></div>
         <div class="card-body">
@@ -2012,6 +2013,28 @@
         </div>
       </div>
     `).join('');
+
+    // Боты и агенты
+    const botsHTML = portalData.bots ? `
+      <div style="grid-column: 1/-1; margin-top:40px; padding-top:40px; border-top: 2px solid var(--border); margin-bottom:20px">
+        <div class="section-title">Боты и агенты</div>
+      </div>
+      ${portalData.bots.map(b => `
+        <div class="card">
+          <div class="card-header"><span class="card-title">${b.name}</span><span class="badge badge-muted">🤖</span></div>
+          <div class="card-body">
+            <p style="margin-bottom:8px"><strong>Роль:</strong> ${b.role}</p>
+            <p style="margin-bottom:12px"><strong>GitHub:</strong> <a href="https://github.com/${b.github.substring(1)}" target="_blank" style="color:var(--accent);text-decoration:none">${b.github}</a></p>
+            <div style="border-top:1px solid var(--border);padding-top:12px">
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-light);margin-bottom:8px">Функционал</div>
+              <p style="font-size:13px;margin:0">${b.functionality}</p>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    ` : '';
+
+    participantsContainer.innerHTML = peopleHTML + botsHTML;
   }
 
   function renderToolsTab() {

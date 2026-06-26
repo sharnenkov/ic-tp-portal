@@ -149,11 +149,16 @@ async function countActiveMembersLastDays(repoPath, days = 2) {
     console.warn('Ошибка при подсчёте активных участников:', err);
   }
 
-  const authorsList = Array.from(authors);
-  console.log(`\n🚨 АКТИВНЫЕ УЧАСТНИКИ (${days} дней): ${authorsList.length} человек`);
-  console.log('Имена:', authorsList.join(', '));
+  // Исключаем ботов из подсчёта реальных участников
+  const botPatterns = ['bot', 'bot-', '[bot]', '-bot', 'action', 'claude', 'ai-'];
+  const humanAuthors = Array.from(authors).filter(author =>
+    !botPatterns.some(pattern => author.toLowerCase().includes(pattern))
+  );
+
+  console.log(`\n🚨 АКТИВНЫЕ УЧАСТНИКИ (${days} дней): ${humanAuthors.length} человек`);
+  console.log('Имена:', humanAuthors.join(', '));
   console.log(`\n`);
-  return { count: authors.size, names: authorsList };
+  return { count: humanAuthors.length, names: humanAuthors, allAuthors: Array.from(authors) };
 }
 
 // Dynamic metrics calculation

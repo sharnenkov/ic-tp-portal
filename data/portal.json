@@ -132,6 +132,21 @@
     }
   ],
 
+  "bots": [
+    {
+      "name": "Claude AI",
+      "github": "@Den_Claude_Stack",
+      "role": "Разработчик",
+      "functionality": "Генерация кода, анализ архитектуры, код-ревью, документация"
+    },
+    {
+      "name": "GitHub Actions",
+      "github": "@github-actions",
+      "role": "Automation",
+      "functionality": "CI/CD pipeline, автоматизированные проверки, деплой"
+    }
+  ],
+
   "tools": [
     {
       "name": "GitHub",
