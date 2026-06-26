@@ -121,21 +121,21 @@ function countActiveMembersLastDays(commits, days = 2) {
 
 // Dynamic metrics calculation
 async function calculateDocumentation(repoPath) {
-  // Count documentation files: README, docs/, wiki
-  let score = 50;
+  // Documentation quality:严格评估
+  let score = 30; // базовый уровень низкий
 
   try {
-    // Check for README
     const readme = await fetchGitHub(`/repos/${repoPath}/contents/README.md`);
-    if (readme && readme.length > 0) score += 15;
+    if (readme && readme.length > 0) score += 20;
 
-    // Check for docs folder
     const docs = await fetchGitHub(`/repos/${repoPath}/contents/docs`);
-    if (docs && docs.length > 0) score += 20;
+    if (docs && Array.isArray(docs) && docs.length > 3) score += 30;
 
-    // Check for CONTRIBUTING
     const contributing = await fetchGitHub(`/repos/${repoPath}/contents/CONTRIBUTING.md`);
-    if (contributing && contributing.length > 0) score += 10;
+    if (contributing && contributing.length > 0) score += 15;
+
+    const architecture = await fetchGitHub(`/repos/${repoPath}/contents/docs/ARCHITECTURE.md`);
+    if (architecture && architecture.length > 0) score += 5;
   } catch (e) {
     // Ignore 404s
   }
@@ -144,21 +144,21 @@ async function calculateDocumentation(repoPath) {
 }
 
 async function calculateKnowledgeManagement(repoPath) {
-  // Knowledge management: CONTRIBUTING, changelog, examples, docs structure
-  let score = 40;
+  // Knowledge management: процессная дисциплина
+  let score = 25;
 
   try {
     const contributing = await fetchGitHub(`/repos/${repoPath}/contents/CONTRIBUTING.md`);
-    if (contributing && contributing.length > 0) score += 15;
+    if (contributing && contributing.length > 0) score += 20;
 
     const changelog = await fetchGitHub(`/repos/${repoPath}/contents/CHANGELOG.md`);
-    if (changelog && changelog.length > 0) score += 15;
+    if (changelog && changelog.length > 0) score += 20;
 
     const examples = await fetchGitHub(`/repos/${repoPath}/contents/examples`);
-    if (examples && examples.length > 0) score += 15;
+    if (examples && Array.isArray(examples) && examples.length > 2) score += 15;
 
     const log = await fetchGitHub(`/repos/${repoPath}/contents/log`);
-    if (log && log.length > 0) score += 15;
+    if (log && Array.isArray(log) && log.length > 2) score += 20;
   } catch (e) {
     // Ignore 404s
   }
@@ -167,25 +167,25 @@ async function calculateKnowledgeManagement(repoPath) {
 }
 
 async function calculateCodeQuality(repoPath) {
-  // Code quality: project structure, config files
-  let score = 50;
+  // Code quality: строгие критерии
+  let score = 35;
 
   try {
-    // Check for src/ folder
     const src = await fetchGitHub(`/repos/${repoPath}/contents/src`);
-    if (src && src.length > 0) score += 10;
+    if (src && Array.isArray(src) && src.length > 2) score += 15;
 
-    // Check for .eslintrc or linting config
     const eslint = await fetchGitHub(`/repos/${repoPath}/contents/.eslintrc.json`);
-    if (eslint && eslint.length > 0) score += 10;
+    if (eslint && eslint.length > 0) score += 15;
 
-    // Check for prettier
     const prettier = await fetchGitHub(`/repos/${repoPath}/contents/.prettierrc`);
     if (prettier && prettier.length > 0) score += 10;
 
-    // Check for tsconfig (TypeScript quality)
     const tsconfig = await fetchGitHub(`/repos/${repoPath}/contents/tsconfig.json`);
     if (tsconfig && tsconfig.length > 0) score += 15;
+
+    // Check for tests
+    const tests = await fetchGitHub(`/repos/${repoPath}/contents/test`);
+    if (tests && Array.isArray(tests) && tests.length > 2) score += 10;
   } catch (e) {
     // Ignore 404s
   }
@@ -194,21 +194,21 @@ async function calculateCodeQuality(repoPath) {
 }
 
 async function calculateArchitectureQuality(repoPath) {
-  // Architecture: modular structure, documentation
-  let score = 50;
+  // Architecture: модульность и документация
+  let score = 30;
 
   try {
-    // Check for src with subdirectories (modular)
     const src = await fetchGitHub(`/repos/${repoPath}/contents/src`);
-    if (src && Array.isArray(src) && src.filter(f => f.type === 'dir').length > 3) score += 15;
+    if (src && Array.isArray(src) && src.filter(f => f.type === 'dir').length > 4) score += 20;
 
-    // Check for deliverables/architecture docs
     const deliverables = await fetchGitHub(`/repos/${repoPath}/contents/deliverables`);
-    if (deliverables && deliverables.length > 0) score += 20;
+    if (deliverables && Array.isArray(deliverables) && deliverables.length > 3) score += 25;
 
-    // Check for api/ or services/ (layered architecture)
+    const context = await fetchGitHub(`/repos/${repoPath}/contents/context`);
+    if (context && Array.isArray(context) && context.length > 2) score += 15;
+
     const api = await fetchGitHub(`/repos/${repoPath}/contents/api`);
-    if (api && api.length > 0) score += 15;
+    if (api && api.length > 0) score += 10;
   } catch (e) {
     // Ignore 404s
   }
@@ -217,19 +217,35 @@ async function calculateArchitectureQuality(repoPath) {
 }
 
 async function calculateSystemReliability(commits) {
-  // Reliability: commit frequency, releases, CI/CD presence
-  let score = 50;
+  // System reliability: КЛЮЧЕВАЯ метрика! Строгие критерии
+  let score = 20;
 
-  // More than 10 commits/week = stable
   const weeklyCommits = countCommitsInDays(commits, 7);
-  if (weeklyCommits > 10) score += 20;
-  if (weeklyCommits > 20) score += 10;
-
-  // Regular commits (committed in last 3 days = active)
   const recentCommits = countCommitsInDays(commits, 3);
-  if (recentCommits > 0) score += 20;
+  const dayCommits = countCommitsInDays(commits, 1);
 
-  return Math.min(100, score);
+  // Регулярные коммиты = стабильность
+  if (weeklyCommits >= 15) score += 20;
+  else if (weeklyCommits >= 10) score += 15;
+  else if (weeklyCommits >= 5) score += 10;
+
+  // Активность в последние дни
+  if (recentCommits >= 3) score += 20;
+  else if (recentCommits >= 1) score += 10;
+
+  // Коммиты сегодня?
+  if (dayCommits > 0) score += 15;
+
+  // Множество авторов = меньше одного человека
+  const authors = new Set();
+  (commits || []).slice(0, 50).forEach(c => {
+    const author = c.commit?.author?.name || c.author?.login;
+    if (author) authors.add(author);
+  });
+  if (authors.size >= 3) score += 15;
+  else if (authors.size >= 2) score += 10;
+
+  return Math.min(100, Math.max(20, score));
 }
 
 export default async (req, res) => {
@@ -304,22 +320,45 @@ export default async (req, res) => {
       system_reliability: { score: sysScore }
     };
 
-    // Calculate overall (9 metrics average)
-    const scores = [
-      metrics.documentation.score,
-      metrics.knowledge_management.score,
-      metrics.guardian_rules.score,
-      metrics.codeQuality.score,
-      metrics.codeReview.score,
-      metrics.project_management.score,
-      metrics.team_coordination.score,
-      metrics.architecture.score,
-      metrics.system_reliability.score
-    ];
+    // Calculate overall with weighted scoring
+    // Guardian (Дисциплина) - 25% (КЛЮЧЕВАЯ)
+    // System Reliability (Надежность) - 25% (КЛЮЧЕВАЯ)
+    // Остальные 7 метрик - 50% поровну (7.14% каждая)
+    const weights = {
+      documentation: 0.0714,
+      knowledge_management: 0.0714,
+      guardian_rules: 0.25,
+      codeQuality: 0.0714,
+      codeReview: 0.0714,
+      project_management: 0.0714,
+      team_coordination: 0.0714,
+      architecture: 0.0714,
+      system_reliability: 0.25
+    };
 
-    metrics.overallConnectivity = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+    metrics.overallConnectivity = Math.round(
+      metrics.documentation.score * weights.documentation +
+      metrics.knowledge_management.score * weights.knowledge_management +
+      metrics.guardian_rules.score * weights.guardian_rules +
+      metrics.codeQuality.score * weights.codeQuality +
+      metrics.codeReview.score * weights.codeReview +
+      metrics.project_management.score * weights.project_management +
+      metrics.team_coordination.score * weights.team_coordination +
+      metrics.architecture.score * weights.architecture +
+      metrics.system_reliability.score * weights.system_reliability
+    );
 
     console.log(`📈 Связность: ${metrics.overallConnectivity}/100`);
+    console.log(`\n📊 Детали метрик:`);
+    console.log(`  🛡️  Дисциплина разработки (Guardian): ${metrics.guardian_rules.score} (вес: 25%)`);
+    console.log(`  ✅ Надежность системы: ${metrics.system_reliability.score} (вес: 25%)`);
+    console.log(`  📚 Документированность: ${metrics.documentation.score}`);
+    console.log(`  🎓 Управление знаниями: ${metrics.knowledge_management.score}`);
+    console.log(`  ⚡ Качество кода: ${metrics.codeQuality.score}`);
+    console.log(`  🔁 Code Review: ${metrics.codeReview.score}`);
+    console.log(`  📊 Управление проектом: ${metrics.project_management.score}`);
+    console.log(`  👥 Координация команды: ${metrics.team_coordination.score}`);
+    console.log(`  🏗️  Качество архитектуры: ${metrics.architecture.score}`);
 
     res.status(200).json(metrics);
   } catch (error) {
