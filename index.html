@@ -1628,11 +1628,16 @@
   }
 
   // Load Connectivity Metrics
-  async function connLoadMetrics() {
+  async function connLoadMetrics(overrideMetrics) {
     try {
-      const response = await fetch('./metrics.json');
-      if (!response.ok) throw new Error('Failed to load metrics');
-      const metrics = await response.json();
+      let metrics = overrideMetrics;
+
+      // Если параметра нет - загружаем из файла (при инициализации)
+      if (!metrics) {
+        const response = await fetch('./metrics.json');
+        if (!response.ok) throw new Error('Failed to load metrics');
+        metrics = await response.json();
+      }
 
       // Overall value
       const overallValue = metrics.overallConnectivity;
