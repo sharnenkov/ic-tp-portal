@@ -2098,8 +2098,6 @@
       localStorage.setItem('conn-current-metrics', JSON.stringify(newMetrics));
 
       // Перезагрузить дашборд
-      document.getElementById('conn-entropyValue').textContent = newMetrics.overallConnectivity;
-      connSaveMetricHistory(newMetrics.overallConnectivity);
       connLoadMetrics(newMetrics);
 
       btn.classList.remove('loading');
