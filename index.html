@@ -182,6 +182,8 @@
       padding: 28px 36px 64px;
     }
 
+    /* Зелёная связность активирована! */
+
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
@@ -2160,6 +2162,8 @@
     }
 
     initConnectivity();
+    // Убедимся что маркер инициализирован правильно с начальным значением
+    connAnimatePointer();
     connSetupResponsive();
     setInterval(connUpdateTimer, 60000);
 
