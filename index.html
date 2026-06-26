@@ -1671,6 +1671,18 @@
       const overallValue = metrics.overallConnectivity;
       document.getElementById('conn-entropyValue').textContent = overallValue;
 
+      // Обновляем плашку на главной
+      const kpiStrip = document.getElementById('kpi-strip');
+      if (kpiStrip) {
+        const connCards = kpiStrip.querySelectorAll('[data-goto="connectivity"]');
+        connCards.forEach(card => {
+          const valueEl = card.querySelector('.kpi-value');
+          if (valueEl) {
+            valueEl.innerHTML = `<span class="green">${overallValue}</span><span style="color:var(--muted-light)">/100</span>`;
+          }
+        });
+      }
+
       // Save to history and get week data
       connSaveMetricHistory(overallValue);
       const weekData = connGetWeekData(overallValue);
