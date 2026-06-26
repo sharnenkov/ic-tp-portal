@@ -1279,7 +1279,7 @@
           <div class="conn-scale-legend">
             <div class="conn-legend-item">
               <div class="conn-legend-dot" style="background: #e05050;"></div>
-              <span>Слабая (0-25)</span>
+              <span>Хаос (0-25)</span>
             </div>
             <div class="conn-legend-item">
               <div class="conn-legend-dot" style="background: #f79a4f;"></div>
@@ -1327,7 +1327,7 @@
 
           <div class="conn-guide-row">
             <strong>0–25</strong>
-            <div>🔴 <strong>Слабая</strong> — много выявленных нарушений, система расползается. Срочное вмешательство!</div>
+            <div>🔴 <strong>Хаос</strong> — много выявленных нарушений, система расползается. Срочное вмешательство!</div>
           </div>
 
           <div class="conn-guide-row">
@@ -1407,7 +1407,7 @@
 
   // Get color by value (согласно спектру связности)
   function connGetColorByValue(value) {
-    if (value < 25) return '#e05050'; // Слабая - красный
+    if (value < 25) return '#e05050'; // Хаос - красный
     if (value < 50) return '#f79a4f'; // Средняя - оранжевый
     if (value < 75) return '#f5d547'; // Хорошая - жёлтый
     return '#4fb87c'; // Идеальная - зелёный
@@ -1610,6 +1610,7 @@
     const history = JSON.parse(localStorage.getItem('conn-history') || '{}');
     const dates = [];
     const values = [];
+    const validValues = [];
 
     // Генерируем последние 7 дней
     for (let i = 6; i >= 0; i--) {
@@ -1617,12 +1618,19 @@
       d.setDate(d.getDate() - i);
       const dateStr = d.toISOString().split('T')[0];
       dates.push(dateStr);
-      values.push(history[dateStr] || currentValue);
+
+      if (history[dateStr]) {
+        values.push(history[dateStr]);
+        validValues.push(history[dateStr]);
+      } else {
+        values.push(currentValue);
+      }
     }
 
     const daysCollected = Object.keys(history).length;
     const daysUntilFull = Math.max(0, 7 - daysCollected);
-    const weekAverage = Math.round(values.reduce((a, b) => a + b, 0) / values.length);
+    // Считаем среднюю только для дней с данными
+    const weekAverage = validValues.length > 0 ? Math.round(validValues.reduce((a, b) => a + b, 0) / validValues.length) : currentValue;
 
     return { values, dates, daysCollected, daysUntilFull, weekAverage };
   }
