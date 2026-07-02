@@ -2166,36 +2166,37 @@
   }
 
   // Init portal data
-  window.addEventListener('DOMContentLoaded', () => {
+  window.addEventListener('DOMContentLoaded', async () => {
+    // Load connectivity metrics FIRST (before rendering main portal)
+    // so that KPI strip shows correct values, not stale localStorage data
+    if (document.getElementById('conn-waveCanvas')) {
+      try {
+        const response = await fetch('/api/metrics');
+        if (response.ok) {
+          const metrics = await response.json();
+          await connLoadMetrics(metrics);
+        } else {
+          // Fallback to local file if API fails
+          await connLoadMetrics();
+        }
+      } catch (err) {
+        console.warn('API недоступен, загружаем локальные данные:', err);
+        await connLoadMetrics();
+      }
+    }
+
+    // THEN load main portal data (uses updated metrics from above)
     loadPortalData();
   });
 
   // Init connectivity dashboard
   if (document.getElementById('conn-waveCanvas')) {
-    // При загрузке страницы - загружаем актуальные данные из API
-    const initConnectivity = async () => {
-      try {
-        const response = await fetch('/api/metrics');
-        if (response.ok) {
-          const metrics = await response.json();
-          connLoadMetrics(metrics);
-        } else {
-          // Fallback to local file if API fails
-          connLoadMetrics();
-        }
-      } catch (err) {
-        console.warn('API недоступен, загружаем локальные данные:', err);
-        connLoadMetrics();
-      }
-    };
-
     // Setup header refresh button
     const headerRefreshBtn = document.getElementById('header-refresh-btn');
     if (headerRefreshBtn) {
       headerRefreshBtn.addEventListener('click', connRefreshMetrics);
     }
 
-    initConnectivity();
     connSetupResponsive();
     setInterval(connUpdateTimer, 60000);
 
