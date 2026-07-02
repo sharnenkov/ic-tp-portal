@@ -1678,8 +1678,26 @@
   }
 
   // Load Connectivity Metrics
+  // Clear old connectivity data from localStorage
+  function connClearOldData() {
+    const keysToDelete = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('conn-')) {
+        keysToDelete.push(key);
+      }
+    }
+    keysToDelete.forEach(key => localStorage.removeItem(key));
+    if (keysToDelete.length > 0) {
+      console.log('🧹 Очищены старые данные localStorage:', keysToDelete);
+    }
+  }
+
   async function connLoadMetrics(overrideMetrics) {
     try {
+      // Очищаем старые данные перед загрузкой новых
+      connClearOldData();
+
       let metrics = overrideMetrics;
 
       // Если параметра нет - загружаем из файла (при инициализации)
