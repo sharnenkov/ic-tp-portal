@@ -1775,12 +1775,12 @@
           details: `Расчёт: Страж выявляет нарушения (50% оценки). Остальное (50%) = скорость исправления. ${metrics.guardian_rules.violations} нарушений → штраф ${metrics.guardian_rules.violations * 10} баллов`
         },
         {
-          icon: '⚡',
-          name: 'Качество кода',
+          icon: '⚙️',
+          name: 'Качество автоматизации',
           value: metrics.codeQuality.score,
           impact: '+' + Math.round(metrics.codeQuality.score * 0.1) + ' баллов',
           positive: metrics.codeQuality.score >= 80,
-          details: `Расчёт: Скор linter и сложность = ${metrics.codeQuality.score} баллов`
+          details: `Расчёт: сопровождаемость агентов и дашбордов — workflows + scripts (+25), CLAUDE.md (+20), docs/GUARDIAN.md (+10), docs/AUTOMATION.md (+15), examples/ (+10) = ${metrics.codeQuality.score} баллов`
         },
         {
           icon: '🔁',

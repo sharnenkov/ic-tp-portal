@@ -208,26 +208,36 @@ async function calculateKnowledgeManagement(repoPath) {
   return Math.min(100, score);
 }
 
-async function calculateCodeQuality(repoPath) {
-  // Code quality: строгие критерии
-  let score = 35;
+async function calculateAutomationQuality(repoPath) {
+  // Качество автоматизации: IC.TP — не кодовый проект (линтеры/тесты неприменимы),
+  // но в нём живут агенты (Страж, workflows) и дашборды.
+  // Меряем сопровождаемость: автоматизация существует, задокументирована,
+  // агенты самонастраиваются, есть образцы для новых участников.
+  let score = 20;
 
   try {
-    const src = await fetchGitHub(`/repos/${repoPath}/contents/src`);
-    if (src && Array.isArray(src) && src.length > 2) score += 15;
+    // Автоматизация существует и логика вынесена в скрипты (не inline в yml)
+    const workflows = await fetchGitHub(`/repos/${repoPath}/contents/.github/workflows`);
+    if (workflows && Array.isArray(workflows) && workflows.length >= 2) score += 15;
 
-    const eslint = await fetchGitHub(`/repos/${repoPath}/contents/.eslintrc.json`);
-    if (eslint && eslint.length > 0) score += 15;
+    const scripts = await fetchGitHub(`/repos/${repoPath}/contents/.github/scripts`);
+    if (scripts && Array.isArray(scripts) && scripts.length >= 1) score += 10;
 
-    const prettier = await fetchGitHub(`/repos/${repoPath}/contents/.prettierrc`);
-    if (prettier && prettier.length > 0) score += 10;
+    // Агенты самонастраиваются: инструкции читаются автоматически
+    const claudeMd = await fetchGitHub(`/repos/${repoPath}/contents/CLAUDE.md`);
+    if (claudeMd && claudeMd.length > 0) score += 20;
 
-    const tsconfig = await fetchGitHub(`/repos/${repoPath}/contents/tsconfig.json`);
-    if (tsconfig && tsconfig.length > 0) score += 15;
+    // Автоматизация задокументирована
+    const guardianDoc = await fetchGitHub(`/repos/${repoPath}/contents/docs/GUARDIAN.md`);
+    if (guardianDoc && guardianDoc.length > 0) score += 10;
 
-    // Check for tests
-    const tests = await fetchGitHub(`/repos/${repoPath}/contents/test`);
-    if (tests && Array.isArray(tests) && tests.length > 2) score += 10;
+    // Реестр всех автоматизаций + стандарт создания новых
+    const automationDoc = await fetchGitHub(`/repos/${repoPath}/contents/docs/AUTOMATION.md`);
+    if (automationDoc && automationDoc.length > 0) score += 15;
+
+    // Образцы для онбординга
+    const examples = await fetchGitHub(`/repos/${repoPath}/contents/examples`);
+    if (examples && Array.isArray(examples) && examples.length >= 2) score += 10;
   } catch (e) {
     // Ignore 404s
   }
@@ -331,7 +341,7 @@ export default async (req, res) => {
     const [docScore, kmScore, cqScore, archScore, sysScore, activeMembersData] = await Promise.all([
       calculateDocumentation(REPO),
       calculateKnowledgeManagement(REPO),
-      calculateCodeQuality(REPO),
+      calculateAutomationQuality(REPO),
       calculateArchitectureQuality(REPO),
       calculateSystemReliability(commits),
       countActiveMembersLastDays(REPO, 2)
@@ -347,6 +357,7 @@ export default async (req, res) => {
         violations,
         score: calculateGuardianScore(violations)
       },
+      // Ключ codeQuality сохранён для совместимости с клиентом; семантика — качество автоматизации
       codeQuality: { score: cqScore },
       codeReview: {
         openPRs: openPRsCount,
@@ -400,7 +411,7 @@ export default async (req, res) => {
     console.log(`  ✅ Надежность системы: ${metrics.system_reliability.score} (вес: 25%)`);
     console.log(`  📚 Документированность: ${metrics.documentation.score}`);
     console.log(`  🎓 Управление знаниями: ${metrics.knowledge_management.score}`);
-    console.log(`  ⚡ Качество кода: ${metrics.codeQuality.score}`);
+    console.log(`  ⚙️ Качество автоматизации: ${metrics.codeQuality.score}`);
     console.log(`  🔁 Code Review: ${metrics.codeReview.score}`);
     console.log(`  📊 Управление проектом: ${metrics.project_management.score}`);
     console.log(`  👥 Координация команды: ${metrics.team_coordination.score}`);
