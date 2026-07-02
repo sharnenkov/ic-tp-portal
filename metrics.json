@@ -1,56 +1,37 @@
 {
-  "timestamp": "2026-07-02T12:50:00.000Z",
-  "note": "Обновлено: создан GOVERNANCE.md и CLAUDE.md, передана ответственность от Дениса к Алексею",
+  "timestamp": "2026-07-02T11:49:26.534Z",
+  "note": "Fallback-файл для локального запуска. На Vercel метрики вычисляются живьём через /api/metrics. Значения ниже — снимок реальных данных API.",
   "documentation": {
-    "score": 88
+    "score": 65
   },
   "knowledge_management": {
-    "score": 72
+    "score": 65
   },
   "guardian_rules": {
-    "violations": 5,
-    "score": 45
+    "violations": 12,
+    "score": 20
   },
   "codeQuality": {
-    "score": 82
+    "score": 35
   },
   "codeReview": {
     "openPRs": 0,
-    "avgReviewHours": 14,
-    "reviewedCount": 9,
-    "score": 80
+    "avgReviewHours": 0,
+    "score": 100
   },
   "project_management": {
-    "open_issues": 32,
-    "closed_issues": 0,
+    "open_issues": 29,
     "score": 30
   },
   "team_coordination": {
-    "active_members": 3,
-    "score": 85
+    "active_members": 1,
+    "score": 50
   },
   "architecture": {
-    "score": 81
+    "score": 70
   },
   "system_reliability": {
-    "score": 88
+    "score": 85
   },
-  "issues": {
-    "openCount": 32,
-    "score": 20
-  },
-  "commitRegularity": {
-    "weeklyCommits": 14,
-    "score": 95
-  },
-  "testCoverage": {
-    "score": 78
-  },
-  "stability": {
-    "score": 88
-  },
-  "testReliability": {
-    "score": 84
-  },
-  "overallConnectivity": 74
+  "overallConnectivity": 56
 }
