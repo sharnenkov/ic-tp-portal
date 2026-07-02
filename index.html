@@ -2102,7 +2102,7 @@
     `).join('');
   }
 
-  // Refresh metrics from API
+  // Refresh metrics from API or file
   async function connRefreshMetrics() {
     const btn = document.getElementById('header-refresh-btn');
     if (!btn || btn.classList.contains('loading')) return;
@@ -2110,10 +2110,26 @@
     btn.classList.add('loading');
 
     try {
-      const response = await fetch('/api/metrics');
-      if (!response.ok) throw new Error(`API error: ${response.status}`);
+      let newMetrics = null;
 
-      const newMetrics = await response.json();
+      // Сначала пытаемся загрузить из API
+      try {
+        const response = await fetch('/api/metrics');
+        if (response.ok) {
+          newMetrics = await response.json();
+          console.log('✅ Метрики загружены из API');
+        }
+      } catch (apiErr) {
+        console.log('ℹ️ API недоступен, загружаем из файла');
+      }
+
+      // Если API не работает - загружаем из файла
+      if (!newMetrics) {
+        const response = await fetch('./metrics.json');
+        if (!response.ok) throw new Error('Failed to load metrics from file');
+        newMetrics = await response.json();
+        console.log('✅ Метрики загружены из файла');
+      }
 
       // Перезагрузить дашборд (сохранение в localStorage происходит внутри)
       connLoadMetrics(newMetrics);
