@@ -1756,7 +1756,7 @@
           value: metrics.documentation.score + '%',
           impact: '+' + Math.round(metrics.documentation.score * 0.11) + ' баллов',
           positive: metrics.documentation.score >= 80,
-          details: `Расчёт: ${metrics.documentation.score}% покрытие × 0.11 = +${Math.round(metrics.documentation.score * 0.11)} баллов`
+          details: `Идеал (100): описаны все сущности и системы. База/README/CONTRIBUTING/ONBOARDING/docs+ARCHITECTURE+навигация (+60), GLOSSARY — словарь сущностей (+15), граф знаний в main (+15), свежесть docs ≤30 дней (+10). Сейчас: ${metrics.documentation.score}`
         },
         {
           icon: '🎓',
@@ -1764,7 +1764,7 @@
           value: metrics.knowledge_management.score,
           impact: '+' + Math.round(metrics.knowledge_management.score * 0.1) + ' баллов',
           positive: metrics.knowledge_management.score >= 80,
-          details: `Расчёт: Наличие wiki, примеров, docs = ${metrics.knowledge_management.score} баллов`
+          details: `Идеал (100): знания фиксируются и практика живая. decisions/insights/CHANGELOG/examples/протоколы (+45), папки рефлексий ≥3 (+10), свежая рефлексия ≤7 дней (+15), decisions.md ≤14 дней (+10), FAQ (+10). Сейчас: ${metrics.knowledge_management.score}`
         },
         {
           icon: '🛡',
@@ -1780,7 +1780,7 @@
           value: metrics.codeQuality.score,
           impact: '+' + Math.round(metrics.codeQuality.score * 0.1) + ' баллов',
           positive: metrics.codeQuality.score >= 80,
-          details: `Расчёт: сопровождаемость агентов и дашбордов — workflows + scripts (+25), CLAUDE.md (+20), docs/GUARDIAN.md (+10), docs/AUTOMATION.md (+15), examples/ (+10) = ${metrics.codeQuality.score} баллов`
+          details: `Идеал (100): всё работает на целевом стеке, планы доведены до финала. Workflows + scripts (+20), CLAUDE.md (+10), документация (+20), тесты скриптов (+15), прогресс дорожной карты docs/AUTOMATION.md — доля [x] × 25. Сейчас: ${metrics.codeQuality.score}`
         },
         {
           icon: '🔁',

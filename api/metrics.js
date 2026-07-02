@@ -161,23 +161,67 @@ async function countActiveMembersLastDays(repoPath, days = 2) {
   return { count: humanAuthors.length, names: humanAuthors, allAuthors: Array.from(authors) };
 }
 
+// ── Helpers для идеал-ориентированных метрик ──────────────────────
+
+async function fileExists(repoPath, path) {
+  const r = await fetchGitHub(`/repos/${repoPath}/contents/${path}`);
+  return r && r.length > 0;
+}
+
+async function dirCount(repoPath, path) {
+  const r = await fetchGitHub(`/repos/${repoPath}/contents/${path}`);
+  return (r && Array.isArray(r)) ? r.length : 0;
+}
+
+// Дата последнего коммита, затронувшего path (null если нет)
+async function lastCommitDate(repoPath, path) {
+  const commits = await fetchGitHub(`/repos/${repoPath}/commits?path=${encodeURIComponent(path)}&per_page=1`);
+  const d = commits?.[0]?.commit?.author?.date;
+  return d ? new Date(d) : null;
+}
+
+function daysAgo(date) {
+  if (!date) return Infinity;
+  return (Date.now() - date.getTime()) / 86400000;
+}
+
+// Прогресс чекбоксов в markdown-файле: {done, total}
+async function checkboxProgress(repoPath, path) {
+  try {
+    const r = await fetchGitHub(`/repos/${repoPath}/contents/${path}`);
+    const content = r?.[0]?.content;
+    if (!content) return { done: 0, total: 0 };
+    const text = Buffer.from(content, 'base64').toString('utf-8');
+    const done = (text.match(/- \[x\]/gi) || []).length;
+    const total = done + (text.match(/- \[ \]/g) || []).length;
+    return { done, total };
+  } catch {
+    return { done: 0, total: 0 };
+  }
+}
+
 // Dynamic metrics calculation
 async function calculateDocumentation(repoPath) {
-  // Documentation quality:严格评估
-  let score = 30; // базовый уровень низкий
+  // Идеал (100): описаны все сущности (глоссарий + граф знаний), системы,
+  // процессы и онбординг; документация свежая. 100 — это идеал, не «файлы есть».
+  let score = 10;
 
   try {
-    const readme = await fetchGitHub(`/repos/${repoPath}/contents/README.md`);
-    if (readme && readme.length > 0) score += 20;
+    if (await fileExists(repoPath, 'README.md')) score += 10;
+    if (await fileExists(repoPath, 'CONTRIBUTING.md')) score += 10;
+    if (await fileExists(repoPath, 'ONBOARDING.md')) score += 5;
+    if ((await dirCount(repoPath, 'docs')) >= 4) score += 10;
+    if (await fileExists(repoPath, 'docs/ARCHITECTURE.md')) score += 10;
+    if (await fileExists(repoPath, 'docs/README.md')) score += 5;
 
-    const docs = await fetchGitHub(`/repos/${repoPath}/contents/docs`);
-    if (docs && Array.isArray(docs) && docs.length > 3) score += 30;
+    // Все сущности и термины проекта описаны (словарь)
+    if (await fileExists(repoPath, 'docs/GLOSSARY.md') || await fileExists(repoPath, 'GLOSSARY.md')) score += 15;
 
-    const contributing = await fetchGitHub(`/repos/${repoPath}/contents/CONTRIBUTING.md`);
-    if (contributing && contributing.length > 0) score += 15;
+    // Граф знаний формализован и находится в main (решение АР-4 от 22.06)
+    if (await fileExists(repoPath, 'graph') || await fileExists(repoPath, 'SCHEMA.md') || await fileExists(repoPath, 'entities.yaml')) score += 15;
 
-    const architecture = await fetchGitHub(`/repos/${repoPath}/contents/docs/ARCHITECTURE.md`);
-    if (architecture && architecture.length > 0) score += 5;
+    // Документация живая: docs/ обновлялись за последние 30 дней
+    if (daysAgo(await lastCommitDate(repoPath, 'docs')) <= 30) score += 10;
   } catch (e) {
     // Ignore 404s
   }
@@ -186,21 +230,29 @@ async function calculateDocumentation(repoPath) {
 }
 
 async function calculateKnowledgeManagement(repoPath) {
-  // Knowledge management: процессная дисциплина
-  let score = 25;
+  // Идеал (100): знания фиксируются (решения, инсайты, протоколы),
+  // переиспользуются (образцы, FAQ) и практика рефлексии ЖИВАЯ, а не разовая.
+  let score = 10;
 
   try {
-    const contributing = await fetchGitHub(`/repos/${repoPath}/contents/CONTRIBUTING.md`);
-    if (contributing && contributing.length > 0) score += 20;
+    if (await fileExists(repoPath, 'log/decisions.md')) score += 10;
+    if (await fileExists(repoPath, 'log/insights.md')) score += 5;
+    if (await fileExists(repoPath, 'CHANGELOG.md')) score += 10;
+    if ((await dirCount(repoPath, 'examples')) >= 2) score += 10;
 
-    const changelog = await fetchGitHub(`/repos/${repoPath}/contents/CHANGELOG.md`);
-    if (changelog && changelog.length > 0) score += 20;
+    // Протоколы встреч архивируются в log/
+    if ((await dirCount(repoPath, 'log')) >= 5) score += 10;
 
-    const examples = await fetchGitHub(`/repos/${repoPath}/contents/examples`);
-    if (examples && Array.isArray(examples) && examples.length > 2) score += 15;
+    // Практика рефлексии: папки участников есть...
+    if ((await dirCount(repoPath, 'reflections')) >= 3) score += 10;
+    // ...и практика живая — свежая рефлексия за последние 7 дней
+    if (daysAgo(await lastCommitDate(repoPath, 'reflections')) <= 7) score += 15;
 
-    const log = await fetchGitHub(`/repos/${repoPath}/contents/log`);
-    if (log && Array.isArray(log) && log.length > 2) score += 20;
+    // Журнал решений живой: обновлялся за последние 14 дней
+    if (daysAgo(await lastCommitDate(repoPath, 'log/decisions.md')) <= 14) score += 10;
+
+    // Накопленные вопросы оформлены в FAQ
+    if (await fileExists(repoPath, 'docs/FAQ.md')) score += 10;
   } catch (e) {
     // Ignore 404s
   }
@@ -209,35 +261,36 @@ async function calculateKnowledgeManagement(repoPath) {
 }
 
 async function calculateAutomationQuality(repoPath) {
-  // Качество автоматизации: IC.TP — не кодовый проект (линтеры/тесты неприменимы),
-  // но в нём живут агенты (Страж, workflows) и дашборды.
-  // Меряем сопровождаемость: автоматизация существует, задокументирована,
-  // агенты самонастраиваются, есть образцы для новых участников.
-  let score = 20;
+  // Идеал (100): вся автоматизация работает на целевом (суверенном) стеке,
+  // планы дорожной карты доведены до финала, скрипты покрыты тестами,
+  // агенты самонастраиваются и всё задокументировано.
+  // Прогресс к идеалу считается по чекбоксам дорожной карты в docs/AUTOMATION.md.
+  let score = 10;
 
   try {
-    // Автоматизация существует и логика вынесена в скрипты (не inline в yml)
-    const workflows = await fetchGitHub(`/repos/${repoPath}/contents/.github/workflows`);
-    if (workflows && Array.isArray(workflows) && workflows.length >= 2) score += 15;
-
-    const scripts = await fetchGitHub(`/repos/${repoPath}/contents/.github/scripts`);
-    if (scripts && Array.isArray(scripts) && scripts.length >= 1) score += 10;
+    // База: автоматизация существует и логика вынесена в скрипты (не inline в yml)
+    if ((await dirCount(repoPath, '.github/workflows')) >= 2) score += 10;
+    if ((await dirCount(repoPath, '.github/scripts')) >= 1) score += 10;
 
     // Агенты самонастраиваются: инструкции читаются автоматически
-    const claudeMd = await fetchGitHub(`/repos/${repoPath}/contents/CLAUDE.md`);
-    if (claudeMd && claudeMd.length > 0) score += 20;
+    if (await fileExists(repoPath, 'CLAUDE.md')) score += 10;
 
-    // Автоматизация задокументирована
-    const guardianDoc = await fetchGitHub(`/repos/${repoPath}/contents/docs/GUARDIAN.md`);
-    if (guardianDoc && guardianDoc.length > 0) score += 10;
+    // Автоматизация задокументирована: реестр + стандарт + Страж
+    if (await fileExists(repoPath, 'docs/AUTOMATION.md')) score += 10;
+    if (await fileExists(repoPath, 'docs/GUARDIAN.md')) score += 5;
+    if ((await dirCount(repoPath, 'examples')) >= 2) score += 5;
 
-    // Реестр всех автоматизаций + стандарт создания новых
-    const automationDoc = await fetchGitHub(`/repos/${repoPath}/contents/docs/AUTOMATION.md`);
-    if (automationDoc && automationDoc.length > 0) score += 15;
+    // Скрипты покрыты тестами (можно менять без страха сломать)
+    const scriptFiles = await fetchGitHub(`/repos/${repoPath}/contents/.github/scripts`);
+    const hasTests = Array.isArray(scriptFiles) &&
+      scriptFiles.some(f => (f.name || '').startsWith('test_') || f.name === 'tests');
+    if (hasTests) score += 15;
 
-    // Образцы для онбординга
-    const examples = await fetchGitHub(`/repos/${repoPath}/contents/examples`);
-    if (examples && Array.isArray(examples) && examples.length >= 2) score += 10;
+    // Дорожная карта к идеалу: доля выполненных пунктов в docs/AUTOMATION.md
+    const roadmap = await checkboxProgress(repoPath, 'docs/AUTOMATION.md');
+    if (roadmap.total > 0) {
+      score += Math.round(25 * roadmap.done / roadmap.total);
+    }
   } catch (e) {
     // Ignore 404s
   }
