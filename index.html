@@ -1702,7 +1702,9 @@
 
       // Если параметра нет - загружаем из файла (при инициализации)
       if (!metrics) {
-        const response = await fetch('./metrics.json');
+        // Add cache-busting parameter to force fresh load
+        const cacheBuster = `?t=${Date.now()}`;
+        const response = await fetch(`./metrics.json${cacheBuster}`);
         if (!response.ok) throw new Error('Failed to load metrics');
         metrics = await response.json();
       }
@@ -2143,7 +2145,9 @@
 
       // Если API не работает - загружаем из файла
       if (!newMetrics) {
-        const response = await fetch('./metrics.json');
+        // Add cache-busting parameter to force fresh load
+        const cacheBuster = `?t=${Date.now()}`;
+        const response = await fetch(`./metrics.json${cacheBuster}`);
         if (!response.ok) throw new Error('Failed to load metrics from file');
         newMetrics = await response.json();
         console.log('✅ Метрики загружены из файла');
