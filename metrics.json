@@ -1,14 +1,15 @@
 {
-  "timestamp": "2026-06-25T14:19:07.815Z",
+  "timestamp": "2026-07-02T12:30:00.000Z",
+  "note": "Обновлено: создан GOVERNANCE.md и CLAUDE.md, передана ответственность от Дениса к Алексею",
   "documentation": {
-    "score": 85
+    "score": 88
   },
   "knowledge_management": {
-    "score": 70
+    "score": 72
   },
   "guardian_rules": {
-    "violations": 10,
-    "score": 20
+    "violations": 5,
+    "score": 45
   },
   "codeQuality": {
     "score": 82
@@ -51,5 +52,5 @@
   "testReliability": {
     "score": 84
   },
-  "overallConnectivity": 67
+  "overallConnectivity": 74
 }
