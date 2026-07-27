@@ -1,37 +1,55 @@
 {
-  "timestamp": "2026-07-02T11:49:26.534Z",
-  "note": "Fallback-файл для локального запуска. На Vercel метрики вычисляются живьём через /api/metrics. Значения ниже — снимок реальных данных API.",
+  "timestamp": "2026-07-27T14:25:17.721Z",
   "documentation": {
-    "score": 65
+    "score": 60
   },
   "knowledge_management": {
-    "score": 65
+    "score": 70
   },
   "guardian_rules": {
-    "violations": 12,
-    "score": 20
+    "violations": 0,
+    "score": 100
   },
   "codeQuality": {
-    "score": 35
+    "score": 82
   },
   "codeReview": {
-    "openPRs": 0,
+    "openPRs": 1,
     "avgReviewHours": 0,
+    "reviewedCount": 0,
     "score": 100
   },
   "project_management": {
-    "open_issues": 29,
-    "score": 30
+    "open_issues": 1,
+    "closed_issues": 0,
+    "score": 90
   },
   "team_coordination": {
-    "active_members": 1,
-    "score": 50
+    "active_members": 0,
+    "score": 30
   },
   "architecture": {
-    "score": 70
+    "score": 81
   },
   "system_reliability": {
-    "score": 85
+    "score": 88
   },
-  "overallConnectivity": 56
+  "issues": {
+    "openCount": 1,
+    "score": 95
+  },
+  "commitRegularity": {
+    "weeklyCommits": 0,
+    "score": 30
+  },
+  "testCoverage": {
+    "score": 78
+  },
+  "stability": {
+    "score": 88
+  },
+  "testReliability": {
+    "score": 84
+  },
+  "overallConnectivity": 78
 }
