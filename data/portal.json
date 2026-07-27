@@ -1,10 +1,10 @@
 {
   "kpis": {
-    "deadline": {
-      "label": "До дедлайна",
+    "team": {
+      "label": "Участников",
       "value": "5",
-      "date": "1 августа 2026",
-      "type": "amber"
+      "description": "Активные члены команды IC.TP",
+      "type": "accent"
     },
     "tasks": {
       "label": "Открытых задач",
