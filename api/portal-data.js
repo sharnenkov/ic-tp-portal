@@ -24,6 +24,10 @@ export default async (req, res) => {
     const fileContent = fs.readFileSync(filePath, 'utf-8');
     const data = JSON.parse(fileContent);
 
+    // Disable caching for fresh data
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     res.status(200).json(data);
   } catch (error) {
     console.error('❌ Error loading portal data:', error);
