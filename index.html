@@ -1179,15 +1179,27 @@
           <div class="phase-name">Гигиена репозитория</div>
           <div class="phase-desc">Детерминированные проверки: структура файлов, метаданные артефактов, правила PR. Запускается при каждом pull request.</div>
           <div style="display:flex;align-items:center;gap:10px">
-            <span class="badge badge-accent">● PR #26 на ревью</span>
-            <span style="font-size:11px;color:var(--muted-light);font-family:var(--mono)">guardian-hygiene.yml</span>
+            <span class="badge badge-green">✓ Готова</span>
+            <span style="font-size:11px;color:var(--muted-light);font-family:var(--mono)">Ждёт PR #26</span>
           </div>
         </div>
-        <div class="phase-card pending-phase">
+        <div class="phase-card active-phase">
           <div class="phase-num">Фаза 2</div>
           <div class="phase-name">Scope Monitor</div>
           <div class="phase-desc">Семантический мониторинг: Telegram-бот сигнализирует, когда новые артефакты не соответствуют зафиксированному образу результата.</div>
-          <span class="badge badge-muted">⏳ После смержа Phase 1</span>
+          <span class="badge badge-accent">● В разработке</span>
+        </div>
+        <div class="phase-card active-phase">
+          <div class="phase-num">Фаза 3</div>
+          <div class="phase-name">Audit & Reporting</div>
+          <div class="phase-desc">Еженедельные и ежемесячные отчёты о состоянии репо, нарушениях, метриках дисциплины.</div>
+          <span class="badge badge-green">✓ Готова</span>
+        </div>
+        <div class="phase-card pending-phase">
+          <div class="phase-num">Фаза 4</div>
+          <div class="phase-name">Smart Rules</div>
+          <div class="phase-desc">Адаптивные правила, обучение на истории. Динамическая подстройка проверок под контекст проекта.</div>
+          <span class="badge badge-muted">📋 Планируется</span>
         </div>
       </div>
     </div>
@@ -1220,13 +1232,13 @@
               <td><span class="tech-layer">ИИ (гигиена)</span></td>
               <td style="font-weight:500">Страж · Phase 1</td>
               <td style="color:var(--muted-light)">Детерминированные проверки: структура, метаданные, правила.</td>
-              <td><span class="badge badge-accent">● На ревью</span></td>
+              <td><span class="badge badge-green">✓ Готова</span></td>
             </tr>
             <tr>
               <td><span class="tech-layer">ИИ (семантика)</span></td>
               <td style="font-weight:500">Страж · Phase 2</td>
-              <td style="color:var(--muted-light)">Соответствие артефактов образу результата.</td>
-              <td><span class="badge badge-muted">⏳ Запланирован</span></td>
+              <td style="color:var(--muted-light)">Мониторинг scope. Интеграция Telegram-бота.</td>
+              <td><span class="badge badge-accent">● В разработке</span></td>
             </tr>
             <tr>
               <td><span class="tech-layer">LLM</span></td>
