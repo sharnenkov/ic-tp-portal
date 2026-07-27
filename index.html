@@ -1677,11 +1677,9 @@
       }
     });
 
-    // Сохраняем только если дата изменилась
-    if (history[today] === undefined) {
-      history[today] = value;
-      localStorage.setItem('conn-history', JSON.stringify(history));
-    }
+    // Всегда обновляем значение для сегодня (может быть несколько запусков в день)
+    history[today] = value;
+    localStorage.setItem('conn-history', JSON.stringify(history));
 
     return history;
   }
