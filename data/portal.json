@@ -105,7 +105,6 @@
       "expertise": "Backend, GitHub Actions, Страж, методология",
       "github": "@denisrudomanenko-stack",
       "tasks": [
-        { "id": "#122", "text": "OpenCode нарушает правила идентификации", "status": "in-progress" },
         { "id": "#119", "text": "GRPH: сценарий допустимых форматов", "status": "in-progress" },
         { "id": "#121", "text": "Архитектура среды трансформации", "status": "in-progress" }
       ]
