@@ -2,14 +2,14 @@
   "kpis": {
     "deadline": {
       "label": "До дедлайна",
-      "value": "6",
-      "date": "1 июля 2026",
+      "value": "5",
+      "date": "1 августа 2026",
       "type": "amber"
     },
     "tasks": {
       "label": "Открытых задач",
-      "value": "3",
-      "issues": ["#15", "#19", "#21"],
+      "value": "15",
+      "issues": ["#146", "#145", "#122", "#144", "#119"],
       "type": "accent"
     },
     "maturity": {
@@ -100,34 +100,64 @@
 
   "participants": [
     {
-      "role": "Реализатор",
+      "role": "Координатор + Реализатор",
       "name": "Алексей Шарненков",
-      "expertise": "Архитектура, IC.TP координация",
+      "expertise": "Архитектура, IC.TP координация, автоматизация",
       "github": "@sharnenkov",
       "tasks": [
-        { "id": "#15", "text": "Подготовить онбординг для Рубена", "status": "in-progress" },
-        { "id": "#19", "text": "Согласовать архитектуру переговорной", "status": "in-progress" },
-        { "id": "#21", "text": "Закрыть Issue #17 (Milestone)", "status": "todo" }
+        { "id": "#146", "text": "Страж Issue #145 без критерия закрытия", "status": "in-progress" },
+        { "id": "#145", "text": "Guardian Phase 4: Smart Rules адаптивные", "status": "in-progress" },
+        { "id": "#114", "text": "Суверенная витрина трекера", "status": "blocked" }
       ]
     },
     {
-      "role": "Архитектор",
+      "role": "Методолог + Архитектор",
       "name": "Денис Рудоманенко",
-      "expertise": "Backend, GitHub Actions, Страж",
-      "github": "@denisrudomanenko",
+      "expertise": "Backend, GitHub Actions, Страж, методология",
+      "github": "@denisrudomanenko-stack",
       "tasks": [
-        { "id": "#26", "text": "Смержить PR #26 (Страж Phase 1)", "status": "in-progress" },
-        { "id": "#25", "text": "Настроить GitHub Actions workflow", "status": "done" }
+        { "id": "#26", "text": "PR #26 (Страж Phase 1) в production", "status": "done" },
+        { "id": "#122", "text": "OpenCode нарушает правила идентификации", "status": "in-progress" },
+        { "id": "#119", "text": "GRPH: сценарий форматов", "status": "in-progress" }
       ]
     },
     {
-      "role": "Эксперт",
-      "name": "Вячеслав (Bronislav28)",
-      "expertise": "Методология, документация",
+      "role": "Практик + Эксперт",
+      "name": "Бронислав Карташов",
+      "expertise": "Методология, Knowledge Management, документация",
       "github": "@Bronislav28",
       "tasks": [
-        { "id": "#20", "text": "Обновить методологический корпус", "status": "in-progress" },
-        { "id": "#22", "text": "Зафиксировать рефлексию встречи 15.06", "status": "done" }
+        { "id": "#121", "text": "Архитектура среды трансформации", "status": "in-progress" },
+        { "id": "#118", "text": "Маркер статуса в feedback-файлах", "status": "discussion" },
+        { "id": "#92", "text": "Белбин в онбординг", "status": "in-progress" }
+      ]
+    },
+    {
+      "role": "Оператор + Участник",
+      "name": "Екатерина Соколовская",
+      "expertise": "Координация интеграции, рефлексии, синхронизация",
+      "github": "@Ekaterina-S",
+      "tasks": [
+        { "id": "#144", "text": "Дневной аудит Стража — синхронизация", "status": "in-progress" },
+        { "id": "#97", "text": "Рефлексивная сессия 08.07.2026", "status": "done" }
+      ]
+    },
+    {
+      "role": "Участник (UX/Визуализация)",
+      "name": "Карина",
+      "expertise": "UX дизайн, визуализация, компоненты",
+      "github": "@kopyray-ux",
+      "tasks": [
+        { "id": "#19", "text": "Портал. Концепт единого интерфейса", "status": "done" }
+      ]
+    },
+    {
+      "role": "Практик",
+      "name": "Вячеслав (Слава)",
+      "expertise": "Системное моделирование, трансформация",
+      "github": "—",
+      "tasks": [
+        { "id": "#109", "text": "Пилот на Акселераторе ЦИР", "status": "in-progress" }
       ]
     }
   ],
@@ -136,20 +166,38 @@
     {
       "name": "Страж (Guardian)",
       "github": "@guardian-bot",
-      "role": "Монитор гигиены",
-      "functionality": "Проверка структуры файлов, метаданные артефактов, правила PR, дисциплина разработки"
+      "role": "Монитор гигиены и качества",
+      "functionality": "Phase 1-3: гигиена файлов, метаданные, правила PR. Phase 4-5: Smart Rules, отчёты, семантический мониторинг"
+    },
+    {
+      "name": "Telegram-уведомления (Вестник)",
+      "github": "@telegram-bot",
+      "role": "Интеграция + Оповещения",
+      "functionality": "Алерты о PR, Issues, push, критические замечания (🚨, 🚫) в Telegram. v2 Production-ready"
+    },
+    {
+      "name": "Рефлектор-бот",
+      "github": "@ictp-reflector-bot",
+      "role": "Диалог рефлексии",
+      "functionality": "Telegram-бот рефлексии команды, интеграция с Claude API, сохранение в reflections/ папку"
+    },
+    {
+      "name": "Activity Tracker",
+      "github": "@activity-tracker",
+      "role": "Дашборд активности",
+      "functionality": "Сбор открытых Issues/PR каждые 30 мин, синхронизация в Google Sheet, отслеживание метрик команды"
     },
     {
       "name": "Claude AI",
       "github": "@Den_Claude_Stack",
-      "role": "Разработчик",
-      "functionality": "Генерация кода, анализ архитектуры, код-ревью, документация"
+      "role": "Разработчик + Анализ",
+      "functionality": "Генерация кода, анализ архитектуры, код-ревью, документация, интеграция через GitHub Actions"
     },
     {
       "name": "GitHub Actions",
       "github": "@github-actions",
-      "role": "Automation",
-      "functionality": "CI/CD pipeline, автоматизированные проверки, деплой"
+      "role": "CI/CD Automation",
+      "functionality": "Workflow оркестрация: guardian-hygiene, guardian-audit, telegram-notifications, dashboard-sync, claude-actions"
     }
   ],
 
@@ -167,10 +215,22 @@
       "description": "Монитор гигиены репо. Phase 1 (Гигиена) готова, Phase 2 (Scope Monitor) в разработке."
     },
     {
-      "name": "Telegram Bot",
+      "name": "Telegram Bot (Вестник v2)",
       "category": "Интеграция",
-      "status": "planning",
-      "description": "Уведомления о Страже в Telegram. Запланирован для Phase 2 Стража."
+      "status": "production",
+      "description": "Уведомления о PR, Issues, commits в Telegram. Production-ready, снижена шумность (-70%). Критические алерты (🚨, 🚫) для urgency."
+    },
+    {
+      "name": "Рефлектор-бот",
+      "category": "Интеграция",
+      "status": "testing",
+      "description": "Telegram-бот диалога рефлексии команды. Интеграция с Claude API. Хостинг на Railway (временное решение)."
+    },
+    {
+      "name": "Activity Tracker",
+      "category": "Мониторинг",
+      "status": "production",
+      "description": "Дашборд активности команды. Сбор данных каждые 30 мин из GitHub. Google Sheet синхронизация."
     },
     {
       "name": "Claude Code",
@@ -223,7 +283,7 @@
       },
       {
         "name": "Процессы",
-        "score": 3,
+        "score": 8,
         "description": "Методология Стража, процесс разработки"
       }
     ]
