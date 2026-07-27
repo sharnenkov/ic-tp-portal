@@ -1925,6 +1925,9 @@
 
   function renderOverviewTab() {
     const kpis = portalData.kpis;
+    console.log('🔍 KPIs object:', JSON.stringify(kpis));
+    console.log('🔍 nextMilestone:', kpis?.nextMilestone);
+    console.log('🔍 team:', kpis?.team);
 
     // KPI strip
     const kpiStrip = document.getElementById('kpi-strip');
