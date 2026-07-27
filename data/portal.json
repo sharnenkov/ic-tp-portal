@@ -14,7 +14,7 @@
     },
     "maturity": {
       "label": "Индекс зрелости",
-      "value": "5.2",
+      "value": "6.2",
       "max": "10",
       "dimensions": "6 измерений",
       "type": "green"
@@ -248,23 +248,23 @@
     "dimensions": [
       {
         "name": "Автоматизация",
-        "score": 6,
-        "description": "GitHub Actions, Страж, CI/CD"
+        "score": 7,
+        "description": "GitHub Actions, Страж Phase 1-3, CI/CD workflows"
       },
       {
         "name": "Документация",
         "score": 7,
-        "description": "Wiki, README, процессы в docs"
+        "description": "Wiki, README, процессы в docs, методологический корпус"
       },
       {
         "name": "Командная работа",
-        "score": 4,
-        "description": "Встречи, синхронизация, разделение ролей"
+        "score": 5,
+        "description": "Встречи, синхронизация, разделение ролей, новые участники"
       },
       {
         "name": "Управление знаниями",
-        "score": 5,
-        "description": "Обучение, онбординг, передача знаний"
+        "score": 6,
+        "description": "Обучение, онбординг, рефлексия, передача знаний"
       },
       {
         "name": "Качество кода",
@@ -274,7 +274,7 @@
       {
         "name": "Процессы",
         "score": 8,
-        "description": "Методология Стража, процесс разработки"
+        "description": "Методология Стража, дисциплина, процесс разработки"
       }
     ]
   }
