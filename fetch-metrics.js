@@ -194,21 +194,32 @@ async function getMetrics() {
     }
   };
 
-  // Общая связность (9 метрик с равным весом)
-  const scores = [
-    metrics.documentation.score,
-    metrics.knowledge_management.score,
-    metrics.guardian_rules.score,
-    metrics.codeQuality.score,
-    metrics.codeReview.score,
-    metrics.project_management.score,
-    metrics.team_coordination.score,
-    metrics.architecture.score,
-    metrics.system_reliability.score
-  ];
-  
+  // Общая связность (взвешенная система)
+  // Guardian (Дисциплина) - 25% (КЛЮЧЕВАЯ)
+  // System Reliability (Надежность) - 25% (КЛЮЧЕВАЯ)
+  // Остальные 7 метрик - 50% поровну (7.14% каждая)
+  const weights = {
+    documentation: 0.0714,
+    knowledge_management: 0.0714,
+    guardian_rules: 0.25,
+    codeQuality: 0.0714,
+    codeReview: 0.0714,
+    project_management: 0.0714,
+    team_coordination: 0.0714,
+    architecture: 0.0714,
+    system_reliability: 0.25
+  };
+
   metrics.overallConnectivity = Math.round(
-    scores.reduce((a, b) => a + b, 0) / scores.length
+    metrics.documentation.score * weights.documentation +
+    metrics.knowledge_management.score * weights.knowledge_management +
+    metrics.guardian_rules.score * weights.guardian_rules +
+    metrics.codeQuality.score * weights.codeQuality +
+    metrics.codeReview.score * weights.codeReview +
+    metrics.project_management.score * weights.project_management +
+    metrics.team_coordination.score * weights.team_coordination +
+    metrics.architecture.score * weights.architecture +
+    metrics.system_reliability.score * weights.system_reliability
   );
 
   return metrics;
