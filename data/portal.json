@@ -102,19 +102,19 @@
   "nextSteps": [
     {
       "number": 1,
-      "text": "Закрыть Issue #17 и Milestone «Рамка готова»"
+      "text": "Завершить Phase 2 Стража — Scope Monitor с уведомлениями"
     },
     {
       "number": 2,
-      "text": "Смержить PR #26 (Страж Phase 1) в main"
+      "text": "Интеграция граф-знаний в дашборд — связь сущностей IC.TP"
     },
     {
       "number": 3,
-      "text": "Настроить Telegram-бота (Страж Phase 2 — Scope Monitor)"
+      "text": "Рефлексивный цикл — встреча 15.07 с выводами и adjustment"
     },
     {
       "number": 4,
-      "text": "Перейти к Milestone «Сценарий онбординга»"
+      "text": "Подготовка к передаче в проект — финальная версия 01.08"
     }
   ],
 
