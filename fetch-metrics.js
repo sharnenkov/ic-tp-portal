@@ -8,7 +8,7 @@ const https = require('https');
 const fs = require('fs');
 
 const REPO = 'denisrudomanenko-stack/IC.TP';
-const TOKEN = process.env.GITHUB_TOKEN || '';
+const TOKEN = process.env.ICTP_DASH || process.env.GITHUB_TOKEN || '';
 
 function request(path) {
   return new Promise((resolve) => {
