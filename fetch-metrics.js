@@ -92,13 +92,14 @@ async function getReviewTime(pulls) {
 async function getMetrics() {
   console.log(`📊 Получаем метрики для ${REPO}...`);
 
-  const [issues, pulls, commits, issueComments, prComments, prReviews] = await Promise.all([
+  const [issues, pulls, commits, issueComments, prComments, prReviews, repoFiles] = await Promise.all([
     request(`/repos/${REPO}/issues?state=open&per_page=100`),
     request(`/repos/${REPO}/pulls?state=closed&per_page=50`),
     request(`/repos/${REPO}/commits?per_page=100`),
     request(`/repos/${REPO}/issues/comments?per_page=100&sort=updated&direction=desc`),
     request(`/repos/${REPO}/pulls/comments?per_page=100&sort=updated&direction=desc`),
-    request(`/repos/${REPO}/pulls/reviews?per_page=100`)
+    request(`/repos/${REPO}/pulls/reviews?per_page=100`),
+    request(`/repos/${REPO}/contents`)
   ]);
 
   // Получаем правильное время ревью
@@ -119,7 +120,7 @@ async function getMetrics() {
 
     // 1. Документированность (Documentation)
     documentation: {
-      score: calculateDocumentationScore(tree)
+      score: calculateDocumentationScore(repoFiles)
     },
 
     // 2. Управление знаниями (Knowledge Management)
