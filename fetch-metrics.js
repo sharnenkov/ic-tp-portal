@@ -4,8 +4,8 @@
  * Коррекция: Code Review теперь считается от создания PR до первого review
  */
 
-const https = require('https');
-const fs = require('fs');
+import https from 'https';
+import fs from 'fs';
 
 const REPO = 'denisrudomanenko-stack/IC.TP';
 const TOKEN = process.env.ICTP_DASH || process.env.GITHUB_TOKEN || '';
