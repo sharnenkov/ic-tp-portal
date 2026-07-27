@@ -21,7 +21,7 @@ jobs:
 
       - name: 📊 Запустить скрипт обновления метрик
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ICTP_DASH: ${{ secrets.ICTP_DASH }}
         run: node fetch-metrics.js
 
       - name: 💾 Коммитить обновлённые метрики
