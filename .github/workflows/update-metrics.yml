@@ -20,6 +20,16 @@ jobs:
         with:
           node-version: '24'
 
+      - name: 🔍 Проверить токен
+        run: |
+          if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
+            echo "❌ GITHUB_TOKEN не найден!"
+            exit 1
+          else
+            echo "✅ GITHUB_TOKEN есть"
+            echo "Токен доступен как: secrets.GITHUB_TOKEN"
+          fi
+
       - name: 📊 Запустить скрипт обновления метрик
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
