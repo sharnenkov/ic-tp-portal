@@ -1,8 +1,9 @@
 name: 📊 Обновить метрики связности
 
-# Только ручной запуск через: gh workflow run update-metrics.yml
 on:
-  workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'  # Каждые 30 минут (UTC)
+  workflow_dispatch:        # + возможность запустить вручную
 
 jobs:
   update-metrics:
@@ -23,6 +24,9 @@ jobs:
         env:
           ICTP_DASH: ${{ secrets.ICTP_DASH }}
         run: node fetch-metrics.js
+
+      - name: 📋 Показать обновлённые метрики
+        run: cat metrics.json | head -30
 
       - name: 💾 Коммитить обновлённые метрики
         run: |
