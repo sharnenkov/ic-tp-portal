@@ -366,7 +366,23 @@ export default async (req, res) => {
   }
 
   try {
-    console.log('📊 Получаем метрики для', REPO);
+    console.log('📊 Загружаем метрики из metrics.json...');
+
+    // Попытка загрузить metrics.json из репо
+    try {
+      const metricsFile = await fetchGitHub(`/repos/${REPO}/contents/metrics.json`);
+      if (metricsFile && metricsFile[0]?.content) {
+        const metricsData = JSON.parse(Buffer.from(metricsFile[0].content, 'base64').toString('utf-8'));
+        console.log(`✅ Метрики загружены из metrics.json (обновлено ${metricsData.timestamp})`);
+        res.status(200).json(metricsData);
+        return;
+      }
+    } catch (e) {
+      console.warn('⚠️ Не удалось загрузить metrics.json, используем fallback расчет');
+    }
+
+    // Fallback: пересчитываем метрики если metrics.json не доступен
+    console.log('📊 Пересчитываем метрики для', REPO);
 
     // Fetch data from GitHub API (no token needed for public repos)
     const [issues, pulls, commits] = await Promise.all([
