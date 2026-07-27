@@ -5,6 +5,9 @@ on:
     - cron: '*/30 * * * *'  # Каждые 30 минут (UTC)
   workflow_dispatch:        # + возможность запустить вручную
 
+permissions:
+  contents: write           # Даём workflow права на запись в репо
+
 jobs:
   update-metrics:
     runs-on: ubuntu-latest
