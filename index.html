@@ -1871,7 +1871,7 @@
 
   async function loadPortalData() {
     try {
-      const response = await fetch('/api/portal-data');
+      const response = await fetch(`/api/portal-data?t=${Date.now()}`);
       if (!response.ok) throw new Error('Failed to load portal data');
       portalData = await response.json();
       renderPortalTabs();
