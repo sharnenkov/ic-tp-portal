@@ -119,7 +119,7 @@ async function getMetrics() {
 
     // 1. Документированность (Documentation)
     documentation: {
-      score: 85
+      score: calculateDocumentationScore(tree)
     },
 
     // 2. Управление знаниями (Knowledge Management)
@@ -284,6 +284,21 @@ function calculateCommitScore(weeklyCommits) {
 
 // 2. Управление знаниями (Knowledge Management)
 // Оценивает наличие документации, примеров, сообщений в коммитах
+// Расчет документирования на основе наличия файлов
+function calculateDocumentationScore(tree) {
+  let score = 60; // базовый балл (README, CONTRIBUTING есть)
+
+  const files = tree || [];
+  const fileNames = files.map(f => f.name?.toLowerCase() || '');
+
+  // Проверяем наличие ключевых файлов
+  if (fileNames.includes('glossary.md')) score += 15; // Словарь сущностей
+  if (fileNames.includes('faq.md')) score += 10; // FAQ
+  if (fileNames.includes('knowledge_graph.md')) score += 15; // Граф знаний
+
+  return Math.min(score, 100); // максимум 100
+}
+
 function calculateKnowledgeManagementScore(commits, issues) {
   let score = 70;
 
