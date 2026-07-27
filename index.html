@@ -2021,7 +2021,7 @@
       `).join('');
     }
 
-    // Setup KPI link listeners
+    // Setup KPI link listeners - force redeploy
     document.querySelectorAll('.kpi-link').forEach(card => {
       card.addEventListener('click', () => {
         const tabId = card.dataset.goto;
