@@ -100,6 +100,17 @@
 
   "participants": [
     {
+      "role": "Методолог + Архитектор",
+      "name": "Денис Рудоманенко",
+      "expertise": "Backend, GitHub Actions, Страж, методология",
+      "github": "@denisrudomanenko-stack",
+      "tasks": [
+        { "id": "#122", "text": "OpenCode нарушает правила идентификации", "status": "in-progress" },
+        { "id": "#119", "text": "GRPH: сценарий допустимых форматов", "status": "in-progress" },
+        { "id": "#121", "text": "Архитектура среды трансформации", "status": "in-progress" }
+      ]
+    },
+    {
       "role": "Координатор + Реализатор",
       "name": "Алексей Шарненков",
       "expertise": "Архитектура, IC.TP координация, автоматизация",
@@ -108,17 +119,6 @@
         { "id": "#146", "text": "Страж Issue #145 без критерия закрытия", "status": "in-progress" },
         { "id": "#145", "text": "Guardian Phase 4: Smart Rules адаптивные", "status": "in-progress" },
         { "id": "#114", "text": "Суверенная витрина трекера", "status": "blocked" }
-      ]
-    },
-    {
-      "role": "Методолог + Архитектор",
-      "name": "Денис Рудоманенко",
-      "expertise": "Backend, GitHub Actions, Страж, методология",
-      "github": "@denisrudomanenko-stack",
-      "tasks": [
-        { "id": "#26", "text": "PR #26 (Страж Phase 1) в production", "status": "done" },
-        { "id": "#122", "text": "OpenCode нарушает правила идентификации", "status": "in-progress" },
-        { "id": "#119", "text": "GRPH: сценарий форматов", "status": "in-progress" }
       ]
     },
     {
@@ -144,7 +144,7 @@
     },
     {
       "role": "Участник (UX/Визуализация)",
-      "name": "Карина",
+      "name": "Карина Спивакова",
       "expertise": "UX дизайн, визуализация, компоненты",
       "github": "@kopyray-ux",
       "tasks": [
