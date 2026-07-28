@@ -16,7 +16,7 @@ function request(path) {
       resolve([]);
       return;
     }
-    
+
     const options = {
       hostname: 'api.github.com',
       path,
@@ -33,13 +33,32 @@ function request(path) {
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
         try {
+          // Проверяем HTTP статус
+          if (res.statusCode < 200 || res.statusCode >= 300) {
+            console.log(`  ⚠️  API returned ${res.statusCode} for ${path}`);
+            resolve([]);
+            return;
+          }
+
           const parsed = JSON.parse(data);
+
+          // Проверяем что это не ошибка в формате JSON
+          if (parsed.message && parsed.status) {
+            console.log(`  ⚠️  API error: ${parsed.message} (${parsed.status})`);
+            resolve([]);
+            return;
+          }
+
           resolve(Array.isArray(parsed) ? parsed : [parsed]);
-        } catch {
+        } catch (e) {
+          console.log(`  ⚠️  Parse error for ${path}:`, e.message);
           resolve([]);
         }
       });
-    }).on('error', () => resolve([])).end();
+    }).on('error', (err) => {
+      console.log(`  ⚠️  Request error for ${path}:`, err.message);
+      resolve([]);
+    }).end();
   });
 }
 
