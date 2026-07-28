@@ -367,23 +367,16 @@ export default async (req, res) => {
 
   try {
     console.log('📊 Загружаем метрики из metrics.json...');
+    const response = await fetch(`https://raw.githubusercontent.com/${REPO}/main/metrics.json?t=${Date.now()}`);
 
-    // Попытка загрузить metrics.json из репо - НАПРЯМУЮ через fetch
-    try {
-      const response = await fetch(`https://raw.githubusercontent.com/${REPO}/main/metrics.json`);
-      if (response.ok) {
-        const metricsData = await response.json();
-        console.log(`✅ Метрики загружены из metrics.json (overallConnectivity: ${metricsData.overallConnectivity})`);
-        res.status(200).json(metricsData);
-        return;
-      } else {
-        console.warn(`⚠️ metrics.json не найден (${response.status}), используем fallback расчет`);
-      }
-    } catch (e) {
-      console.error(`❌ Ошибка при загрузке metrics.json: ${e.message}`);
+    if (response.ok) {
+      const metricsData = await response.json();
+      console.log(`✅ Успешно! overallConnectivity: ${metricsData.overallConnectivity}`);
+      res.status(200).json(metricsData);
+      return;
     }
 
-    // Fallback: пересчитываем метрики если metrics.json не доступен
+    console.warn(`⚠️ Ошибка загрузки (${response.status}), fallback расчет...`);
     console.log('📊 Пересчитываем метрики для', REPO);
 
     // Fetch data from GitHub API (no token needed for public repos)
