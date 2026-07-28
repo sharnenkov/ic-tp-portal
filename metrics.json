@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-07-28T09:19:03.395Z",
+  "timestamp": "2026-07-28T09:21:06.634Z",
   "documentation": {
     "score": 60
   },
@@ -14,15 +14,15 @@
     "score": 82
   },
   "codeReview": {
-    "openPRs": 1,
+    "openPRs": 0,
     "avgReviewHours": 0,
     "reviewedCount": 0,
     "score": 100
   },
   "project_management": {
-    "open_issues": 1,
+    "open_issues": 0,
     "closed_issues": 0,
-    "score": 90
+    "score": 100
   },
   "team_coordination": {
     "active_members": 0,
@@ -35,8 +35,8 @@
     "score": 88
   },
   "issues": {
-    "openCount": 1,
-    "score": 95
+    "openCount": 0,
+    "score": 100
   },
   "commitRegularity": {
     "weeklyCommits": 0,
