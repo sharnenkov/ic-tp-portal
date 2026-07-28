@@ -275,15 +275,21 @@ function calculateReviewScore(avgHours, openPRs) {
 
 function countCommitsInDays(commits, days) {
   if (!commits) return 0;
-  
+
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
-  
-  return (commits || []).filter(c => {
+
+  console.log(`  🔍 Диагностика commits: ${commits.length} элементов, cutoff: ${cutoff.toISOString()}`);
+
+  return (commits || []).filter((c, i) => {
     try {
-      const date = new Date(c.commit?.committer?.date || c.commit?.author?.date);
-      return date > cutoff;
-    } catch {
+      const dateStr = c.commit?.committer?.date || c.commit?.author?.date;
+      const date = new Date(dateStr);
+      const passed = date > cutoff;
+      if (i < 3) console.log(`    Commit ${i}: ${dateStr} (${new Date(dateStr).toISOString()}) > ${cutoff.toISOString()} = ${passed}`);
+      return passed;
+    } catch (e) {
+      console.log(`    Error parsing commit ${i}:`, e.message);
       return false;
     }
   }).length;
