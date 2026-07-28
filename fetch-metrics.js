@@ -281,12 +281,25 @@ function countCommitsInDays(commits, days) {
 
   console.log(`  🔍 Диагностика commits: ${commits.length} элементов, cutoff: ${cutoff.toISOString()}`);
 
+  if (commits.length > 0) {
+    console.log(`    Commit[0] keys: ${Object.keys(commits[0]).join(', ')}`);
+    if (commits[0].commit) {
+      console.log(`    commit.commit keys: ${Object.keys(commits[0].commit).join(', ')}`);
+      if (commits[0].commit.author) console.log(`    commit.commit.author: ${JSON.stringify(commits[0].commit.author)}`);
+      if (commits[0].commit.committer) console.log(`    commit.commit.committer: ${JSON.stringify(commits[0].commit.committer)}`);
+    }
+  }
+
   return (commits || []).filter((c, i) => {
     try {
       const dateStr = c.commit?.committer?.date || c.commit?.author?.date;
+      if (!dateStr) {
+        console.log(`    Commit ${i}: no dateStr found`);
+        return false;
+      }
       const date = new Date(dateStr);
       const passed = date > cutoff;
-      if (i < 3) console.log(`    Commit ${i}: ${dateStr} (${new Date(dateStr).toISOString()}) > ${cutoff.toISOString()} = ${passed}`);
+      if (i === 0) console.log(`    Commit ${i}: dateStr="${dateStr}", date="${date.toISOString()}", passed=${passed}`);
       return passed;
     } catch (e) {
       console.log(`    Error parsing commit ${i}:`, e.message);
