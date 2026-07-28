@@ -110,10 +110,12 @@ async function getMetrics() {
   const openPRsCount = (pulls || []).filter(p => !p.merged_at).length;
   const weeklyCommits = countCommitsInDays(commits, 7);
   const avgReviewHours = reviewStats.avgHours;
+  const activeMembers = countActiveMembersLastDays(commits, issueComments, prComments, prReviews, 2);
 
-  console.log(`  📋 Issues: ${openIssuesCount} открытых`);
+  console.log(`  📋 Issues: ${openIssuesCount} открытых (массив: ${Array.isArray(issues) ? 'yes' : 'no'})`);
   console.log(`  🔀 PR: ${openPRsCount} открытых, avg review: ${avgReviewHours}h`);
-  console.log(`  📝 Commits: ${weeklyCommits} за неделю`);
+  console.log(`  📝 Commits: ${weeklyCommits} за неделю (массив: ${Array.isArray(commits) ? 'yes' : 'no'}, длина: ${(commits || []).length})`);
+  console.log(`  👥 Active members (2d): ${activeMembers}`);
 
   const metrics = {
     timestamp: new Date().toISOString(),
@@ -156,8 +158,8 @@ async function getMetrics() {
 
     // 7. Координация команды (Team Coordination)
     team_coordination: {
-      active_members: countActiveMembersLastDays(commits, issueComments, prComments, prReviews, 2),
-      score: calculateTeamCoordinationScore(countActiveMembersLastDays(commits, issueComments, prComments, prReviews, 2))
+      active_members: activeMembers,
+      score: calculateTeamCoordinationScore(activeMembers)
     },
 
     // 8. Качество архитектуры (Architecture Quality)
