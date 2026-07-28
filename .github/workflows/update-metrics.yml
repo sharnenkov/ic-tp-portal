@@ -37,10 +37,18 @@ jobs:
       - name: 📊 Запустить скрипт обновления метрик
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node fetch-metrics.js
+        run: |
+          echo "🔍 TOKEN length: ${#GITHUB_TOKEN}"
+          echo "🔍 REPO: denisrudomanenko-stack/IC.TP"
+          node fetch-metrics.js
 
       - name: 📋 Показать обновлённые метрики
-        run: cat metrics.json | head -30
+        run: |
+          echo "=== Полные метрики ==="
+          cat metrics.json
+          echo ""
+          echo "=== Ключевые значения ==="
+          jq '.overallConnectivity, .team_coordination.active_members, .commitRegularity.weeklyCommits' metrics.json
 
       - name: 💾 Коммитить обновлённые метрики
         env:
