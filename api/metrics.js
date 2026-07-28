@@ -368,17 +368,19 @@ export default async (req, res) => {
   try {
     console.log('📊 Загружаем метрики из metrics.json...');
 
-    // Попытка загрузить metrics.json из репо
+    // Попытка загрузить metrics.json из репо - НАПРЯМУЮ через fetch
     try {
-      const metricsFile = await fetchGitHub(`/repos/${REPO}/contents/metrics.json`);
-      if (metricsFile && metricsFile[0]?.content) {
-        const metricsData = JSON.parse(Buffer.from(metricsFile[0].content, 'base64').toString('utf-8'));
-        console.log(`✅ Метрики загружены из metrics.json (обновлено ${metricsData.timestamp})`);
+      const response = await fetch(`https://raw.githubusercontent.com/${REPO}/main/metrics.json`);
+      if (response.ok) {
+        const metricsData = await response.json();
+        console.log(`✅ Метрики загружены из metrics.json (overallConnectivity: ${metricsData.overallConnectivity})`);
         res.status(200).json(metricsData);
         return;
+      } else {
+        console.warn(`⚠️ metrics.json не найден (${response.status}), используем fallback расчет`);
       }
     } catch (e) {
-      console.warn('⚠️ Не удалось загрузить metrics.json, используем fallback расчет');
+      console.error(`❌ Ошибка при загрузке metrics.json: ${e.message}`);
     }
 
     // Fallback: пересчитываем метрики если metrics.json не доступен
