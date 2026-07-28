@@ -36,10 +36,11 @@ jobs:
 
       - name: 📊 Запустить скрипт обновления метрик
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ICTP_DASH || secrets.GITHUB_TOKEN }}
         run: |
           echo "🔍 TOKEN length: ${#GITHUB_TOKEN}"
           echo "🔍 REPO: denisrudomanenko-stack/IC.TP"
+          echo "🔍 Using token: $([ -n '${{ secrets.ICTP_DASH }}' ] && echo 'ICTP_DASH' || echo 'GITHUB_TOKEN')"
           node fetch-metrics.js
 
       - name: 📋 Показать обновлённые метрики
